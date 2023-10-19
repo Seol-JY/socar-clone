@@ -10,8 +10,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'SpoqaHanSansNeo',
+      ),
+      home: const Scaffold(
           body: Text(
         "hello world",
       )),
