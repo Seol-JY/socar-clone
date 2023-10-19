@@ -23,8 +23,11 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: Pretendard
+    - family: SpoqaHanSansNeo
       fonts:
         - asset: assets/fonts/SpoqaHanSansNeo-Bold.otf
+          weight: 700
         - asset: assets/fonts/SpoqaHanSansNeo-Medium.otf
+          weight: 500
         - asset: assets/fonts/SpoqaHanSansNeo-Regular.otf
+          weight: 400
