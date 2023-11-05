@@ -148,34 +148,39 @@ class _TermAgreementWidgetState extends State<_TermAgreementWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 3,
-          ), // 패딩 설정
-          constraints: const BoxConstraints(), // constraints
-          icon: Icon(
-            const IconData(
-              0xe156,
-              fontFamily: 'MaterialIcons',
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 5,
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 3,
+            ), // 패딩 설정
+            constraints: const BoxConstraints(), // constraints
+            icon: Icon(
+              const IconData(
+                0xe156,
+                fontFamily: 'MaterialIcons',
+              ),
+              color: widget.isChecked
+                  ? const Color(0xff28323c)
+                  : const Color(0xffc5c8ce),
             ),
-            color: widget.isChecked
-                ? const Color(0xff28323c)
-                : const Color(0xffc5c8ce),
+            onPressed: () {
+              setState(() {
+                widget.isChecked = !widget.isChecked;
+                widget.pressCallBack();
+              });
+            },
           ),
-          onPressed: () {
-            setState(() {
-              widget.isChecked = !widget.isChecked;
-              widget.pressCallBack();
-            });
-          },
-        ),
-        Text(
-          widget.title,
-        )
-      ],
+          Text(
+            widget.title,
+          )
+        ],
+      ),
     );
   }
 }

@@ -25,8 +25,21 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
             horizontal: 20,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TermAgreementBoxWidget(),
+              SizedBox(
+                height: 30,
+              ),
+              Text(
+                "이름",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              Row(
+                children: [],
+              )
             ],
           )),
     );
