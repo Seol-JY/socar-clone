@@ -54,29 +54,24 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
       ),
       child: ExpansionTile(
         controller: _controller,
-        title: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            10,
-            10,
-            0,
-            10,
-          ),
-          child: Row(
-            children: [
-              Icon(
-                const IconData(
-                  0xf635,
-                  fontFamily: 'MaterialIcons',
-                ),
-                color: isAllTermChecked
-                    ? const Color(0xff28323c)
-                    : const Color(0xffc5c8ce),
+        title: Row(
+          children: [
+            Icon(
+              const IconData(
+                0xf635,
+                fontFamily: 'MaterialIcons',
               ),
-              const Text(
-                " 본인확인 서비스 이용약관 전체 동의",
-              )
-            ],
-          ),
+              color: isAllTermChecked
+                  ? const Color(0xff28323c)
+                  : const Color(0xffc5c8ce),
+            ),
+            const Text(
+              " 본인확인 서비스 이용약관 전체 동의",
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            )
+          ],
         ),
         onExpansionChanged: (value) {
           setState(() {
