@@ -30,6 +30,15 @@ class _NameInputState extends State<NameInputWidget> {
             return DropdownMenuEntry<String>(value: value, label: value);
           }).toList(),
         ),
+        Expanded(
+          child: TextField(
+            controller: textEditingController,
+            decoration: const InputDecoration.collapsed(
+              hintText: "본인 이름(통신사 가입 이름)",
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
       ],
     );
   }
