@@ -20,24 +20,27 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
       appBar: CustomAppBar(
         titleText: "휴대폰 본인인증",
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               vertical: 10,
               horizontal: 20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TermAgreementBoxWidget(),
-                const SizedBox(
+                TermAgreementBoxWidget(),
+                SizedBox(
                   height: 30,
                 ),
-                const Text(
+                Text(
                   "이름",
                   style: TextStyle(
                     fontSize: 20,
                   ),
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 NameInputWidget(),
               ],
