@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/register_page/term_agreement.dart';
 import 'package:socar/widgets/register_page/name_input_widget.dart';
+import 'package:socar/widgets/register_page/security_number_input.dart';
 
 class RegisterAuthPage extends StatefulWidget {
   const RegisterAuthPage({super.key});
@@ -36,13 +37,23 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 Text(
                   "이름",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 NameInputWidget(),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "주민등록번호 앞 7자리",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SecureNumberInputWidget(),
               ],
             )),
       ),
