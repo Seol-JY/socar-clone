@@ -20,12 +20,14 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
             color: const Color(0xffe9ebee),
           ),
         ),
-        child: const Row(
+        child: Row(
           children: [
             Expanded(
               flex: 10,
               child: TextField(
-                decoration: InputDecoration(
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
                   hoverColor: Colors.white,
@@ -35,10 +37,9 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
                 maxLength: 6,
               ),
             ),
-            Expanded(
+            const Expanded(
               flex: 1,
               child: Center(
-                // 또는 Align 사용
                 child: TextField(
                   decoration: InputDecoration(
                     filled: true,
@@ -58,7 +59,9 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
             Expanded(
               flex: 2,
               child: TextField(
-                decoration: InputDecoration(
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
                     hoverColor: Colors.white,
@@ -70,7 +73,6 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
             Expanded(
               flex: 8,
               child: Center(
-                // 또는 Align 사용
                 child: TextField(
                   decoration: InputDecoration(
                     filled: true,
@@ -81,8 +83,8 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
                     hintStyle: TextStyle(
                         fontSize: 20,
                         textBaseline: TextBaseline.ideographic,
-                        letterSpacing: 10.0,
-                        color: Color(0xffe9ebee)),
+                        letterSpacing: MediaQuery.of(context).size.width * 0.02,
+                        color: const Color(0xffe9ebee)),
                   ),
                   readOnly: true,
                 ),
