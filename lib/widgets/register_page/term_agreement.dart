@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TermAgreementBoxWidget extends StatefulWidget {
-  const TermAgreementBoxWidget({super.key});
+  bool isAllTermChecked = false;
+  TermAgreementBoxWidget({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -13,7 +14,6 @@ class TermAgreementBoxWidget extends StatefulWidget {
 class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   final ExpansionTileController _controller = ExpansionTileController();
 
-  bool isAllTermChecked = false;
   late List<_TermAgreementWidget> terms;
 
   @override
@@ -61,7 +61,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
                 0xf635,
                 fontFamily: 'MaterialIcons',
               ),
-              color: isAllTermChecked
+              color: widget.isAllTermChecked
                   ? const Color(0xff28323c)
                   : const Color(0xffc5c8ce),
             ),
@@ -75,7 +75,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
         ),
         onExpansionChanged: (value) {
           setState(() {
-            isAllTermChecked = !value;
+            widget.isAllTermChecked = !value;
             for (int i = 0; i < terms.length; i++) {
               terms[i].isChecked = !value;
             }
@@ -102,7 +102,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
       if (terms[i].isTermChecked() == false) {
         setState(
           () {
-            isAllTermChecked = false;
+            widget.isAllTermChecked = false;
           },
         );
         return;
@@ -110,7 +110,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
     }
     setState(
       () {
-        isAllTermChecked = true;
+        widget.isAllTermChecked = true;
         _controller.collapse();
       },
     );

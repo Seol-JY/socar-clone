@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:socar/widgets/app_bar.dart';
@@ -17,6 +19,36 @@ class RegisterAuthPage extends StatefulWidget {
 class RegisterAuthPageState extends State<RegisterAuthPage> {
   bool isAuthCompleted = false;
   bool isAuthStarted = false;
+  bool isPhoneNumberEntered = false;
+
+  String timerText = "3:00";
+  int timerTime = 180;
+
+  TextEditingController authCodeController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+
+  TermAgreementBoxWidget termAgreementBoxWidget = TermAgreementBoxWidget();
+
+  @override
+  void initState() {
+    super.initState();
+
+    authCodeController.addListener(() {
+      if (authCodeController.text.length == 6) {
+        setState(() {
+          isAuthCompleted = true;
+        });
+      }
+    });
+
+    phoneNumberController.addListener(() {
+      if (phoneNumberController.text.length == 11) {
+        setState(() {
+          isPhoneNumberEntered = true;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +66,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TermAgreementBoxWidget(),
+                termAgreementBoxWidget,
                 const SizedBox(
                   height: 30,
                 ),
@@ -83,6 +115,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                   helperText: "휴대폰 번호 입력",
                   inputFormatter: FilteringTextInputFormatter.digitsOnly,
                   textInputType: TextInputType.number,
+                  textController: phoneNumberController,
                 ),
                 Container(
                   decoration: const BoxDecoration(
@@ -102,12 +135,26 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          child: Text(isAuthStarted ? "재전송" : "인증 번호 발송"),
-                          onPressed: () {
-                            setState(() {
-                              isAuthStarted = true;
-                            });
-                          },
+                          onPressed: isSendButtonEnabled()
+                              ? () {
+                                  if (timerTime != 180) {
+                                    return;
+                                  }
+
+                                  setState(() {
+                                    isAuthStarted = true;
+                                    runTimer();
+                                  });
+                                }
+                              : null,
+                          child: Text(
+                            isAuthStarted ? "재전송" : "인증 번호 발송",
+                            style: TextStyle(
+                              color: isSendButtonEnabled()
+                                  ? const Color(0xff02b8ff)
+                                  : Colors.grey,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -131,6 +178,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                             Expanded(
                                 flex: 2,
                                 child: TextField(
+                                  controller: authCodeController,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly
                                   ],
@@ -144,7 +192,24 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                                         color:
                                             Colors.grey), // placeholder 텍스트 스타일
                                   ),
-                                ))
+                                )),
+                            Expanded(
+                              flex: 1,
+                              child: TextField(
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hoverColor: Colors.white,
+                                  border: InputBorder.none,
+                                  hintText: timerText,
+                                  hintStyle: const TextStyle(
+                                      color: Color(
+                                    0xffff2c51,
+                                  )), // placeholder 텍스트 스타일
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -168,9 +233,11 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
         color:
             isAuthCompleted ? const Color(0xff00b8ff) : const Color(0xffe9ebee),
         child: InkWell(
-          onTap: () {
-            //print('called on tap');
-          },
+          onTap: isAuthCompleted
+              ? () {
+                  print(termAgreementBoxWidget.isAllTermChecked);
+                }
+              : null,
           child: SizedBox(
             height: kToolbarHeight,
             width: double.infinity,
@@ -188,5 +255,27 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
         ),
       ),
     );
+  }
+
+  void runTimer() {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timerTime < 0) {
+        timer.cancel();
+      } else {
+        int min = timerTime ~/ 60;
+        int sec = timerTime % 60;
+
+        setState(() {
+          timerText = '$min:${sec.toString().padLeft(2, '0')}';
+        });
+        timerTime--;
+      }
+    });
+  }
+
+  bool isSendButtonEnabled() {
+    print(termAgreementBoxWidget.isAllTermChecked);
+    return ((!isAuthStarted) || (isAuthStarted && timerTime <= 0)) &&
+        isPhoneNumberEntered;
   }
 }

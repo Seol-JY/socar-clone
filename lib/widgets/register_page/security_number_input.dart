@@ -49,6 +49,7 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
                     hintText: "-",
                     hintStyle: TextStyle(
                       fontSize: 20,
+                      fontWeight: FontWeight.w200,
                       color: Color(0xffe9ebee),
                     ),
                   ),
@@ -58,16 +59,18 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
             ),
             Expanded(
               flex: 2,
-              child: TextField(
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hoverColor: Colors.white,
-                    border: InputBorder.none,
-                    counterText: ""),
-                maxLength: 1,
+              child: Container(
+                child: TextField(
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hoverColor: Colors.white,
+                      border: InputBorder.none,
+                      counterText: ""),
+                  maxLength: 1,
+                ),
               ),
             ),
             Expanded(
@@ -82,6 +85,7 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
                     hintText: "******",
                     hintStyle: TextStyle(
                         fontSize: 20,
+                        fontWeight: FontWeight.w200,
                         textBaseline: TextBaseline.ideographic,
                         letterSpacing: MediaQuery.of(context).size.width * 0.02,
                         color: const Color(0xffe9ebee)),

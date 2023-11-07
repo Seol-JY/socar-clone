@@ -7,6 +7,7 @@ class DropDownTextFieldInRowWidget extends StatefulWidget {
   String? helperText;
   TextInputFormatter? inputFormatter;
   TextInputType? textInputType;
+  TextEditingController? textController;
 
   DropDownTextFieldInRowWidget(
       {Key? key,
@@ -14,7 +15,8 @@ class DropDownTextFieldInRowWidget extends StatefulWidget {
       required this.dropdownList,
       this.inputFormatter,
       this.textInputType,
-      this.helperText})
+      this.helperText,
+      this.textController})
       : super(key: key);
 
   @override
@@ -67,6 +69,7 @@ class _DropDownTextFieldInRowState extends State<DropDownTextFieldInRowWidget> {
           Expanded(
               flex: 2,
               child: TextField(
+                controller: widget.textController,
                 inputFormatters: formatters,
                 keyboardType: widget.textInputType,
                 decoration: InputDecoration(
