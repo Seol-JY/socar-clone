@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:socar/screens/start_page.dart';
-import 'package:socar/screens/login_register_page.dart';
-import 'package:socar/screens/login_page.dart';
-import 'package:socar/screens/register_auth_page.dart';
-import 'package:socar/screens/register_input_page.dart';
+import '../screens/start_page.dart';
+import '../screens/login_register_page.dart';
+import '../screens/login_page.dart';
+import '../screens/register_auth_page.dart';
+import '../screens/register_input_page.dart';
 
 void main() {
   runApp(const MyApp());
