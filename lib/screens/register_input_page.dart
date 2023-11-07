@@ -14,6 +14,26 @@ class RegisterInputPage extends StatefulWidget {
 }
 
 class _RegisterInputState extends State<RegisterInputPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController pwController = TextEditingController();
+  TextEditingController pwValidController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    emailController.addListener(() {
+      setState(() {});
+    });
+    pwController.addListener(() {
+      setState(() {});
+    });
+
+    pwValidController.addListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,16 +73,19 @@ class _RegisterInputState extends State<RegisterInputPage> {
             TitleTextFormWidget(
               title: "아이디",
               hintText: "이메일 주소 입력",
+              controller: emailController,
             ),
             TitleTextFormWidget(
               title: "비밀번호",
               hintText: "영문, 숫자 포함 8자리 이상 입력",
               obSecure: true,
+              controller: pwController,
             ),
             TitleTextFormWidget(
               title: "비밀번호 확인",
               hintText: "비밀번호 재입력",
               obSecure: true,
+              controller: pwValidController,
             ),
           ]),
         ),
@@ -98,6 +121,29 @@ class _RegisterInputState extends State<RegisterInputPage> {
   }
 
   bool isInputCompleted() {
+    return validEmail() && validPassword();
+  }
+
+  bool validEmail() {
+    // 이메일 형식을 검증하기 위한 정규 표현식
+    final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+
+    // 정규 표현식과 문자열을 비교하여 형식이 일치하는지 확인
+    bool validEmail = emailRegExp.hasMatch(emailController.text);
+
+    if (!validEmail) {
+      return false;
+    }
+    // 이메일 중복 체크 로직 필요
+
     return true;
+  }
+
+  bool validPassword() {
+    final passwordRegExp = RegExp(r'^(?=.*[A-Za-z])(?=.*\d).{8,}$');
+
+    // 정규 표현식과 문자열을 비교하여 형식이 일치하는지 확인
+    return passwordRegExp.hasMatch(pwController.text) &&
+        (pwController.text == pwValidController.text);
   }
 }

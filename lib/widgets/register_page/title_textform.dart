@@ -4,11 +4,13 @@ class TitleTextFormWidget extends StatefulWidget {
   String title;
   String hintText;
   bool obSecure;
+  TextEditingController controller;
 
   TitleTextFormWidget(
       {super.key,
       required this.title,
       required this.hintText,
+      required this.controller,
       this.obSecure = false});
 
   @override
@@ -42,6 +44,7 @@ class _TitleTextFormState extends State<TitleTextFormWidget> {
             ),
           ),
           child: TextField(
+            controller: widget.controller,
             obscureText: widget.obSecure,
             decoration: InputDecoration(
               filled: true,
