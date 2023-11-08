@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:socar/complete_payment_page.dart';
+import 'package:socar/utils/term_agreement.dart';
 import 'utils/time_check.dart';
 
 Future<Map<String, dynamic>> loadReservationData() async {
@@ -98,7 +99,9 @@ class ReservationInfo extends StatelessWidget {
 
                   paddingDivider(),
                   Finalprice(),
-                  
+                  paddingDivider(),
+                  CautionFeild(),
+                  TermAgreementBoxWidget(),
                 ],
               ),
             );
@@ -341,3 +344,24 @@ class Usetime extends StatelessWidget {
     }
   }
   
+
+class CautionFeild extends StatelessWidget {
+const CautionFeild({ Key? key }) : super(key: key);
+
+    @override
+  Widget build(BuildContext context){
+    return Container(
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:[const Padding(padding : EdgeInsets.only(left: 20),
+          child :  Text("예약 전 주의 사항")), 
+        Container(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          margin : const EdgeInsets.fromLTRB(20, 5, 20, 5),
+          child :Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [Flexible(child :Text("취소 시점에 따라 취소 수수료나 패널티가 생길 수 있습니다.  반납 후에 결제해야 할 요금이 남아 있다면, 등록한 기본 결제 카드로 자동 결제됩니다.\n동승운전자는 운행 시작 전까지만 등록할 수 있습니다.")),],),
+        ),
+      ],));
+  }
+}
