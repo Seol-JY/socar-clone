@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:socar/screens/register_input_page.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/register_page/term_agreement.dart';
 import 'package:socar/widgets/register_page/dropdown_text_field_in_row.dart';
@@ -23,7 +24,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
 
   String timerText = "3:00";
   int timerTime = 180;
+  Timer? timer;
 
+  TextEditingController usernameController = TextEditingController();
   TextEditingController authCodeController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
 
@@ -83,6 +86,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                   selectedDropdown: "내국인",
                   dropdownList: const ["내국인", "외국인"],
                   helperText: "본인 실명(통신사 가입 이름)",
+                  textController: usernameController,
                 ),
                 const SizedBox(
                   height: 30,
@@ -235,7 +239,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
         child: InkWell(
           onTap: isAuthCompleted
               ? () {
-                  print(termAgreementBoxWidget.isAllTermChecked);
+                  Navigator.pushNamed(context, "/register/input",
+                      arguments: InputPageArguments(
+                          username: usernameController.text));
                 }
               : null,
           child: SizedBox(
@@ -258,7 +264,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
   }
 
   void runTimer() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (timerTime < 0) {
         timer.cancel();
       } else {
@@ -277,5 +283,12 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     print(termAgreementBoxWidget.isAllTermChecked);
     return ((!isAuthStarted) || (isAuthStarted && timerTime <= 0)) &&
         isPhoneNumberEntered;
+  }
+
+  @override
+  void dispose() {
+    // 화면이 종료될 때 Timer를 취소합니다.
+    timer?.cancel();
+    super.dispose();
   }
 }

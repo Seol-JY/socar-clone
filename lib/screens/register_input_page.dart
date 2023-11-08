@@ -3,9 +3,7 @@ import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/register_page/title_textform.dart';
 
 class RegisterInputPage extends StatefulWidget {
-  String username;
-
-  RegisterInputPage({super.key, required this.username});
+  const RegisterInputPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -36,6 +34,9 @@ class _RegisterInputState extends State<RegisterInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as InputPageArguments;
+
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "기본정보",
@@ -50,7 +51,7 @@ class _RegisterInputState extends State<RegisterInputPage> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               Text(
-                widget.username,
+                args.username,
                 style: const TextStyle(
                   fontSize: 15,
                   color: Color(0xff02b8ff),
@@ -146,4 +147,10 @@ class _RegisterInputState extends State<RegisterInputPage> {
     return passwordRegExp.hasMatch(pwController.text) &&
         (pwController.text == pwValidController.text);
   }
+}
+
+class InputPageArguments {
+  final String username;
+
+  InputPageArguments({required this.username});
 }

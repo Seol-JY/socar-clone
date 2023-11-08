@@ -23,7 +23,7 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
         child: Row(
           children: [
             Expanded(
-              flex: 10,
+              flex: 8,
               child: TextField(
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 keyboardType: TextInputType.number,
@@ -50,7 +50,7 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
                     hintStyle: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w200,
-                      color: Color(0xffe9ebee),
+                      color: Colors.grey,
                     ),
                   ),
                   readOnly: true,
@@ -74,7 +74,7 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
               ),
             ),
             Expanded(
-              flex: 8,
+              flex: 7,
               child: Center(
                 child: TextField(
                   decoration: InputDecoration(
@@ -85,10 +85,10 @@ class _SecureNumberInputState extends State<SecureNumberInputWidget> {
                     hintText: "******",
                     hintStyle: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w200,
+                        fontWeight: FontWeight.w100,
                         textBaseline: TextBaseline.ideographic,
                         letterSpacing: MediaQuery.of(context).size.width * 0.02,
-                        color: const Color(0xffe9ebee)),
+                        color: Colors.grey),
                   ),
                   readOnly: true,
                 ),

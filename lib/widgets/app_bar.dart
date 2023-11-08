@@ -11,10 +11,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: const IconButton(
-        icon: Icon(Icons.arrow_back),
-        color: Color(0xff374553),
-        onPressed: null,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        color: const Color(0xff374553),
+        onPressed: () => Navigator.pop(context),
       ),
       backgroundColor: Colors.white,
       elevation: 0.0,

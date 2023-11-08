@@ -50,12 +50,14 @@ class LoginRegisterSelectionpage extends StatelessWidget {
               child: StartPageButton(
                 buttonBackgorundColor: 0xff374553,
                 text: "로그인",
+                onPressed: () => Navigator.pushNamed(context, "/login"),
               ),
             ),
             Expanded(
               child: StartPageButton(
                 buttonBackgorundColor: 0xff00b8ff,
                 text: "회원가입",
+                onPressed: () => Navigator.pushNamed(context, "/register/auth"),
               ),
             ),
           ])
@@ -69,10 +71,13 @@ class StartPageButton extends StatelessWidget {
   int buttonBackgorundColor;
   String text;
 
+  void Function()? onPressed;
+
   StartPageButton({
     super.key,
     required this.buttonBackgorundColor,
     required this.text,
+    this.onPressed,
   });
 
   @override
@@ -83,7 +88,7 @@ class StartPageButton extends StatelessWidget {
           return Color(buttonBackgorundColor);
         }),
       ),
-      onPressed: null,
+      onPressed: onPressed,
       child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
           child: Text(

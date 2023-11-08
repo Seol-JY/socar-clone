@@ -15,7 +15,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RegisterInputPage(username: "김민석"),
+      initialRoute: "/select",
+      routes: {
+        "/select": (context) => const LoginRegisterSelectionpage(),
+        "/login": (context) => const LoginPage(),
+        "/register/auth": (context) => const RegisterAuthPage(),
+        "/register/input": (context) => const RegisterInputPage()
+      },
     );
   }
 }
