@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:socar/reservation_payment_page.dart';
 
 // ignore: must_be_immutable
 class TermAgreementBoxWidget extends StatefulWidget {
@@ -22,23 +24,23 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
     terms = [
       _TermAgreementWidget(
         pressCallBack: validTermsChecked,
+        title: "(필수) 쏘카 자동차대여약관",
+      ),
+      _TermAgreementWidget(
+        pressCallBack: validTermsChecked,
+        title: "(필수) 쏘카 차량손해면책제도 이용약관",
+      ),
+      _TermAgreementWidget(
+        pressCallBack: validTermsChecked,
         title: "(필수) 개인정보 수집 및 이용 동의",
       ),
       _TermAgreementWidget(
         pressCallBack: validTermsChecked,
-        title: "(필수) 고유식별정보 처리",
-      ),
-      _TermAgreementWidget(
-        pressCallBack: validTermsChecked,
-        title: "(필수) 서비스 이용 약관",
-      ),
-      _TermAgreementWidget(
-        pressCallBack: validTermsChecked,
-        title: "(필수) 통신사 이용 약관",
-      ),
-      _TermAgreementWidget(
-        pressCallBack: validTermsChecked,
         title: "(필수) 개인정보 제3자 제공 동의",
+      ),
+      _TermAgreementWidget(
+        pressCallBack: validTermsChecked,
+        title: "(필수) 위치정보 이용약관",
       ),
     ];
     super.initState();
@@ -48,16 +50,17 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white, // 배경색을 흰색으로 설정
-        border: Border.all(
-          color: const Color(0xffe9ebee),
-        ),
+        color: Colors.transparent, // 배경색을 흰색으로 설정
       ),
-      child: ExpansionTile(
+      
+      child: Theme(
+        data: ThemeData().copyWith(dividerColor: Colors.transparent),
+        child : ExpansionTile(
         controller: _controller,
-        title: Row(
+        title: Column(
           children: [
-            Icon(
+            Row(crossAxisAlignment: CrossAxisAlignment.center,
+              children: [Icon(
               const IconData(
                 0xf635,
                 fontFamily: 'MaterialIcons',
@@ -66,14 +69,11 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
                   ? const Color(0xff28323c)
                   : const Color(0xffc5c8ce),
             ),
-            const Text(
-              " 본인확인 서비스 이용약관 전체 동의",
-              style: TextStyle(
-                fontSize: 14,
-              ),
-            )
+            const Text(" 예약 정보 확인 및 모든 약관에 동의합니다.", style: TextStyle(fontSize: 14),)],),
           ],
         ),
+        
+        subtitle: Padding(padding: const EdgeInsets.only(top:5),child : Text("쏘카자동차대여약관, 쏘카 차량손해면책제도 이용약관, 개인정보 수집 및 이용동의, 개인정보 제3자 제공 동의, 위치정보 이용약관"),),
         onExpansionChanged: (value) {
           setState(() {
             widget.isAllTermChecked = !value;
@@ -83,8 +83,10 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
           });
         },
         initiallyExpanded: true,
+        
         children: [
-          const Divider(
+          Padding(padding: EdgeInsets.only(left: 10),
+          child: Column(children: [const Divider(
             color: Color(0xffe9ebee),
             thickness: 1.5,
           ),
@@ -92,26 +94,36 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
           terms[1],
           terms[2],
           terms[3],
-          terms[4],
+          terms[4],],),
+          
+          ),
+          
         ],
+      ),
       ),
     );
   }
 
   void validTermsChecked() {
+    final priceInfo = Provider.of<PriceInfo>(context, listen:false);
+
     for (int i = 0; i < terms.length; i++) {
       if (terms[i].isTermChecked() == false) {
         setState(
           () {
             widget.isAllTermChecked = false;
+            priceInfo.updateterms(false);
           },
         );
         return;
+        
       }
     }
     setState(
       () {
         widget.isAllTermChecked = true;
+        print("pass");
+        priceInfo.updateterms(true);
         _controller.collapse();
       },
     );

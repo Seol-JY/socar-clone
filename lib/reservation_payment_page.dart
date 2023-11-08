@@ -32,9 +32,6 @@ Widget paddingDivider() {
   }
 
 
-
-
-
 class MyApp extends StatelessWidget {
   
   Widget build(BuildContext context) {
@@ -143,32 +140,60 @@ const ReservationPayment({ Key? key }) : super(key: key);
 }
 
 
-class Bottompaybar extends StatelessWidget {
+class Bottompaybar extends StatefulWidget {
 const Bottompaybar({ Key? key }) : super(key: key);
 
+  @override
+  State<Bottompaybar> createState() => _BottompaybarState();
+}
+
+class _BottompaybarState extends State<Bottompaybar> {
   @override
   Widget build(BuildContext context){
     return BottomAppBar(
           color: Color(0xffE9EBEE),
-          child: TextButton(onPressed: (){Navigator.push(
+          child: Consumer<PriceInfo>(
+            builder: (context, priceInfo, child){
+              final isButtonActive = (priceInfo.insprice != "0" && priceInfo.terms == true); 
+              return TextButton(
+                onPressed: isButtonActive
+                  ? (){
+                    Navigator.push(
+                     context,
+                      MaterialPageRoute(builder: (context)=> const CompletePayment()),
+            );}:null,
+             child: const Text("결제하기", style: TextStyle(color:Color(0xffC5C8CE), fontWeight: FontWeight.bold),), 
+            style: TextButton.styleFrom(padding:const EdgeInsets.fromLTRB(70,30,70,30),shape: RoundedRectangleBorder(side : BorderSide(
+              color:Color(0xffE9EBEE))),));
+            }
+          ),
+            
+          );
+  }
+}
+/*
+TextButton(onPressed: (){Navigator.push(
               context,
               MaterialPageRoute(builder: (context)=> const CompletePayment()),
             );}, child: const Text("결제하기", style: TextStyle(color:Color(0xffC5C8CE), fontWeight: FontWeight.bold),), 
             style: TextButton.styleFrom(padding:const EdgeInsets.fromLTRB(70,30,70,30),shape: RoundedRectangleBorder(side : BorderSide(color:Color(0xffE9EBEE))),)),
-          );
-  }
-}
-
-
+*/ 
 
 
 class PriceInfo with ChangeNotifier{
   String _insprice = "0";
+  bool _terms = false;
 
   String get insprice => _insprice;
+  bool get terms => _terms;
 
   void updateInsPrice(String newPrice){
     _insprice = newPrice;
+    notifyListeners();
+  }
+
+  void updateterms(bool newstate){
+    _terms = newstate;
     notifyListeners();
   }
 }
@@ -354,7 +379,7 @@ const CautionFeild({ Key? key }) : super(key: key);
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children:[const Padding(padding : EdgeInsets.only(left: 20),
-          child :  Text("예약 전 주의 사항")), 
+          child :  Text("예약 전 주의 사항", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))), 
         Container(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           margin : const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -362,6 +387,21 @@ const CautionFeild({ Key? key }) : super(key: key);
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [Flexible(child :Text("취소 시점에 따라 취소 수수료나 패널티가 생길 수 있습니다.  반납 후에 결제해야 할 요금이 남아 있다면, 등록한 기본 결제 카드로 자동 결제됩니다.\n동승운전자는 운행 시작 전까지만 등록할 수 있습니다.")),],),
         ),
+        
+        SizedBox(height: 10),
+        TitleText("약관 및 이용 안내 동의"),
+        SizedBox(height: 10),
       ],));
   }
+}
+
+
+
+Widget TitleText(String titleText){
+    return Padding(
+      padding : EdgeInsets.only(left: 20),
+      child :  Text("$titleText",
+       style: TextStyle(
+        fontSize: 14, 
+        fontWeight: FontWeight.bold)));
 }
