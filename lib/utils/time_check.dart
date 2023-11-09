@@ -35,3 +35,8 @@ String StringFormatFromTime(String time) {
   // 결과 출력
   return '$startHour 시 $startMinute 분';
 }
+
+String CarFeeCal(String Time, String BaseRate){
+  String rentFee = (int.parse(Time) * int.parse(BaseRate)).toString();
+  return rentFee;
+}

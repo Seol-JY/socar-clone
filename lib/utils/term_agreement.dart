@@ -7,8 +7,9 @@ import 'package:socar/reservation_payment_page.dart';
 // ignore: must_be_immutable
 class TermAgreementBoxWidget extends StatefulWidget {
   bool isAllTermChecked = false;
+  
   TermAgreementBoxWidget({super.key});
-
+  
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -18,7 +19,7 @@ class TermAgreementBoxWidget extends StatefulWidget {
 
 class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   final ExpansionTileController _controller = ExpansionTileController();
-
+  
   late List<_TermAgreementWidget> terms;
 
   @override
@@ -50,6 +51,8 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
 
   @override
   Widget build(BuildContext context) {
+    
+    final priceInfo = Provider.of<PriceInfo>(context, listen:false);
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent, // 배경색을 흰색으로 설정
@@ -80,8 +83,10 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
           setState(() {
             widget.isAllTermChecked = !value;
             for (int i = 0; i < terms.length; i++) {
+              
               terms[i].isChecked = !value;
             }
+            priceInfo.updateterms(widget.isAllTermChecked);
           });
         },
         initiallyExpanded: true,
@@ -107,8 +112,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   }
 
   void validTermsChecked() {
-    final priceInfo = Provider.of<PriceInfo>(context, listen:false);
-
+  final priceInfo = Provider.of<PriceInfo>(context, listen:false);
     for (int i = 0; i < terms.length; i++) {
       if (terms[i].isTermChecked() == false) {
         setState(
@@ -155,7 +159,7 @@ class _TermAgreementWidget extends StatefulWidget {
 
 class _TermAgreementWidgetState extends State<_TermAgreementWidget> {
   _TermAgreementWidgetState();
-
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
