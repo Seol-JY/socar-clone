@@ -28,11 +28,36 @@ Widget paddingDivider() {
 class Reservationpaymentpage extends StatelessWidget {
   
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ReservationPayment()
-    );
+    return ReservationPayment();
   }
 }
+
+class ReservationPayment extends StatelessWidget {
+const ReservationPayment({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+        appBar:AppBar(
+            leading:  IconButton(
+            onPressed: () {
+              Navigator.pop(context); //뒤로가기
+            },
+            color: Colors.black,
+            icon: const Icon(Icons.arrow_back)),
+            backgroundColor: Colors.transparent, //appBar 투명색
+            elevation: 0.0, //appBar 그림자 농도 설정 (값 0으로 제거)
+            ),
+
+        body : SingleChildScrollView(child : Column(children: [
+            ReservationInfo(),
+          ],
+        ),) ,
+      bottomNavigationBar: Bottompaybar(),
+      );
+  }
+}
+
 
 
 
@@ -41,12 +66,18 @@ class ReservationInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String rentFee = "0";
+    String tmp = "0";
     return FutureBuilder<Map<String, dynamic>>(
       future: loadReservationData(),
       builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
             final data = snapshot.data!;
+            tmp = HourStringfromDuration(Caldatediffernce(data["StartTime"], data["EndTime"]));
+            //print("Calculated tmp value: $tmp");
+            //print("Calculated baserate value: ${data["Baserate"]}");
+            rentFee = CarFeeCal(tmp, data["Baserate"]);
             return Container(
               margin: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
               child: Column(
@@ -85,11 +116,13 @@ class ReservationInfo extends StatelessWidget {
                   paddingDivider(),
                   Usetime(startTime : data["StartTime"] , endTime : data["EndTime"]),
                   
+                  
+
                   paddingDivider(),
                   InsuranceContainer(),
 
                   paddingDivider(),
-                  Finalprice(),
+                  Finalprice(rentalFee: rentFee),
                   paddingDivider(),
                   CautionFeild(),
                   TermAgreementBoxWidget(),
@@ -107,31 +140,6 @@ class ReservationInfo extends StatelessWidget {
 }
 
 
-class ReservationPayment extends StatelessWidget {
-const ReservationPayment({ Key? key }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-        appBar:AppBar(
-            leading:  IconButton(
-            onPressed: () {
-              Navigator.pop(context); //뒤로가기
-            },
-            color: Colors.black,
-            icon: const Icon(Icons.arrow_back)),
-            backgroundColor: Colors.transparent, //appBar 투명색
-            elevation: 0.0, //appBar 그림자 농도 설정 (값 0으로 제거)
-            ),
-
-        body : SingleChildScrollView(child : Column(children: [
-            ReservationInfo(),
-          ],
-        ),) ,
-      bottomNavigationBar: Bottompaybar(),
-      );
-  }
-}
 
 
 class Bottompaybar extends StatefulWidget {
@@ -150,20 +158,18 @@ class _BottompaybarState extends State<Bottompaybar> {
             builder: (context, priceInfo, child){
               final isButtonActive = (priceInfo.insprice != "0" && priceInfo.terms == true); 
               return TextButton(
-                onPressed: isButtonActive
-                  ? (){
-                    Navigator.pushNamed(context, '/reservationConfirm');
-                    }:null,
+                onPressed: (){
+                    Navigator.pushNamed(context, '/completePayment');
+                    },
              child: const Text(
               "결제하기",
               style: TextStyle(
-                color: Colors.black, // 이 부분은 버튼 활성화 여부에 따라 색상이 변경되어야 합니다.
                 fontWeight: FontWeight.bold,
               ),
             ),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
-              backgroundColor: isButtonActive ? Colors.blue : Color(0xffC5C8CE), // 버튼 활성화 상태에 따라 배경색을 변경합니다.
+              backgroundColor: isButtonActive ? Color(0xff00B8FF) : Color(0xffC5C8CE), // 버튼 활성화 상태에 따라 배경색을 변경합니다.
               primary: Colors.white, // 텍스트 색상을 지정합니다.
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(0), // 필요한 경우 여기에 BorderRadius 값을 조정합니다.
@@ -179,13 +185,7 @@ class _BottompaybarState extends State<Bottompaybar> {
           );
   }
 }
-/*
-TextButton(onPressed: (){Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context)=> const CompletePayment()),
-            );}, child: const Text("결제하기", style: TextStyle(color:Color(0xffC5C8CE), fontWeight: FontWeight.bold),), 
-            style: TextButton.styleFrom(padding:const EdgeInsets.fromLTRB(70,30,70,30),shape: RoundedRectangleBorder(side : BorderSide(color:Color(0xffE9EBEE))),)),
-*/ 
+
 
 
 class PriceInfo with ChangeNotifier{
@@ -207,7 +207,8 @@ class PriceInfo with ChangeNotifier{
 }
 
 class Finalprice extends StatelessWidget {
-const Finalprice({ Key? key }) : super(key: key);
+  final String rentalFee;
+  const Finalprice({Key? key, required this.rentalFee}) : super(key: key);
 
   @override
   Widget build(BuildContext context){
@@ -225,7 +226,7 @@ const Finalprice({ Key? key }) : super(key: key);
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("요금 합계", style:TextStyle(fontSize: 13)),
-              Text("${(int.parse("10000")+ int.parse(priceInfo.insprice)).toString()}원"),
+              Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}원"),
             ],
           ),
           trailing: Icon(Icons.expand_more),
@@ -233,7 +234,7 @@ const Finalprice({ Key? key }) : super(key: key);
             ListTile(
               visualDensity: VisualDensity(vertical: -4),
               title: Text('대여 요금', style:TextStyle(fontSize: 13)),
-              trailing: Text("10000원"),
+              trailing: Text("${rentalFee}원"),
             ),
             ListTile(
               visualDensity: VisualDensity(vertical: -4),
@@ -245,7 +246,7 @@ const Finalprice({ Key? key }) : super(key: key);
         SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [Text("총 결제 금액", style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 ),), 
-        Text("${(int.parse("10000")+ int.parse(priceInfo.insprice)).toString()}  원",style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 , color: Color(0xff00B8FF)),)],),
+        Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}  원",style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 , color: Color(0xff00B8FF)),)],),
       ],
     ),
   );
