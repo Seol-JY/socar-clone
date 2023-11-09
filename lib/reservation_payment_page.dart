@@ -6,19 +6,12 @@ import 'package:socar/complete_payment_page.dart';
 import 'package:socar/utils/term_agreement.dart';
 import 'utils/time_check.dart';
 
+
 Future<Map<String, dynamic>> loadReservationData() async {
   String jsonString = await rootBundle.loadString('assets/cars.json');
   return json.decode(jsonString);
 }
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => PriceInfo(),
-      child : MyApp()),
-    );
-    
-}
 
 Widget paddingDivider() {
     return Padding(
@@ -32,11 +25,10 @@ Widget paddingDivider() {
   }
 
 
-class MyApp extends StatelessWidget {
+class Reservationpaymentpage extends StatelessWidget {
   
   Widget build(BuildContext context) {
     return const MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: ReservationPayment()
     );
   }
@@ -45,6 +37,8 @@ class MyApp extends StatelessWidget {
 
 
 class ReservationInfo extends StatelessWidget {
+  const ReservationInfo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
@@ -158,13 +152,27 @@ class _BottompaybarState extends State<Bottompaybar> {
               return TextButton(
                 onPressed: isButtonActive
                   ? (){
-                    Navigator.push(
-                     context,
-                      MaterialPageRoute(builder: (context)=> const CompletePayment()),
-            );}:null,
-             child: const Text("결제하기", style: TextStyle(color:Color(0xffC5C8CE), fontWeight: FontWeight.bold),), 
-            style: TextButton.styleFrom(padding:const EdgeInsets.fromLTRB(70,30,70,30),shape: RoundedRectangleBorder(side : BorderSide(
-              color:Color(0xffE9EBEE))),));
+                    Navigator.pushNamed(context, '/reservationConfirm');
+                    }:null,
+             child: const Text(
+              "결제하기",
+              style: TextStyle(
+                color: Colors.black, // 이 부분은 버튼 활성화 여부에 따라 색상이 변경되어야 합니다.
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
+              backgroundColor: isButtonActive ? Colors.blue : Color(0xffC5C8CE), // 버튼 활성화 상태에 따라 배경색을 변경합니다.
+              primary: Colors.white, // 텍스트 색상을 지정합니다.
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // 필요한 경우 여기에 BorderRadius 값을 조정합니다.
+                side: BorderSide(
+                  color: Color(0xffE9EBEE),
+                ),
+              ),
+            ),
+          );
             }
           ),
             
