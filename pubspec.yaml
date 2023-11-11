@@ -31,3 +31,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/SpoqaHanSansNeo-Regular.otf
           weight: 400
+
+  assets:
+    - assets/
