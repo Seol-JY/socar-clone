@@ -16,16 +16,9 @@ class MarinBar extends StatelessWidget implements PreferredSizeWidget {
         "assets/MAIN_HEADER_LOGO.png",
         width: 90,
       ),
+      iconTheme: const IconThemeData(color: ColorPalette.gray500, size: 24),
       backgroundColor: const Color(0xfff2f4f6),
       elevation: 0.0,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.menu),
-          color: ColorPalette.gray400,
-          iconSize: 30,
-          onPressed: () {},
-        ),
-      ],
     );
   }
 

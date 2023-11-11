@@ -6,15 +6,13 @@ class GoToGetCarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // 기능
-      },
+    return MaterialButton(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      onPressed: () => {},
+      color: const Color.fromARGB(255, 255, 255, 255),
+      elevation: 0,
+      padding: const EdgeInsets.all(0),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: const Color.fromARGB(255, 255, 255, 255),
-        ),
         height: 150,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
