@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:socar/screens/rent_map_page.dart';
 import '../screens/main_page.dart';
+import '../screens/start_page.dart';
+import '../screens/login_register_page.dart';
+import '../screens/login_page.dart';
+import '../screens/register_auth_page.dart';
+import '../screens/register_input_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +17,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,6 +24,13 @@ class MyApp extends StatelessWidget {
         fontFamily: 'SpoqaHanSansNeo',
       ),
       home: const RentMapPage(),
+      initialRoute: "/select",
+      routes: {
+        "/select": (context) => const LoginRegisterSelectionpage(),
+        "/login": (context) => const LoginPage(),
+        "/register/auth": (context) => const RegisterAuthPage(),
+        "/register/input": (context) => const RegisterInputPage()
+      },
     );
   }
 }
