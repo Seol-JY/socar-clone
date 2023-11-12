@@ -11,3 +11,4 @@ class ColorPalette {
   static const Color gray500 = Color(0xFF374553);
   static const Color gray600 = Color(0xFF28323C);
 }
+ 
