@@ -11,7 +11,7 @@ class CompletePayment extends StatelessWidget {
   
   Widget buildDivider(Color dividerColor) {
     return Padding(
-      padding: EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
+      padding: const EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
       child: Divider(
         thickness: 4,
         height: 5,
@@ -24,6 +24,7 @@ class CompletePayment extends StatelessWidget {
   }
 
 
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -37,13 +38,13 @@ class CompletePayment extends StatelessWidget {
               Navigator.pop(context); //뒤로가기
             },
             color: Colors.black,
-            icon: Icon(Icons.clear_outlined)),],
+            icon: const Icon(Icons.clear_outlined)),],
             //appBar 그림자 농도 설정 (값 0으로 제거)
             ),
 
         body : Container(
           color:Colors.white,
-          child:Column(
+          child:const Column(
           mainAxisAlignment: MainAxisAlignment.center, // 수직 방향으로 중앙 정렬
           crossAxisAlignment: CrossAxisAlignment.stretch, 
           children: [
@@ -60,7 +61,7 @@ class CompletePayment extends StatelessWidget {
         ),
         
      bottomNavigationBar: Container(
-        margin: EdgeInsets.only(bottom: 70),
+        margin: const EdgeInsets.only(bottom: 70),
         child: BottomAppBar(
           color: Colors.white, // BottomAppBar의 배경색을 하얗게 설정
           elevation: 0.0,
@@ -73,28 +74,28 @@ class CompletePayment extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context)=> const ReservationConfirm()),
             );},
-                child: Text(
-                  "내 예약 보기",
-                  style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-                ),
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.fromLTRB(50, 25, 50, 25),
+                  padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
                   shape: RoundedRectangleBorder(
                     side: BorderSide(color: Colors.grey.withOpacity(0.5)),
                   ),
+                ),
+                child: const Text(
+                  "내 예약 보기",
+                  style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
                 ),
               ),
               TextButton(
                 onPressed: () {},
-                child: Text(
-                  "홈으로 가기",
-                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                ),
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.fromLTRB(50, 25, 50, 25),
+                  padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
                   shape: RoundedRectangleBorder(
                     side: BorderSide(color: Colors.grey.withOpacity(0.5)),
                   ),
+                ),
+                child: const Text(
+                  "홈으로 가기",
+                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
               ),
             ],

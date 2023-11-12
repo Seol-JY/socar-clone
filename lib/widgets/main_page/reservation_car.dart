@@ -8,17 +8,18 @@ class ReservationCar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 160,
       width: double.infinity,
-      decoration: BoxDecoration(
-          border: Border.all(
-              color: const Color.fromARGB(255, 230, 230, 230), width: 1),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          )),
-      child: Padding(
+      child: Container(
+        decoration: BoxDecoration(
+            color: ColorPalette.white,
+            border:
+                Border.all(color: const Color.fromARGB(255, 230, 230, 230), width: 1),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            )),
         padding: const EdgeInsets.symmetric(
           vertical: 30,
           horizontal: 22,
@@ -95,7 +96,6 @@ class ReservationCar extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                         child: ElevatedButton.icon(
                           onPressed: () {},
-
                           style: ElevatedButton.styleFrom(
                             shape: const StadiumBorder(),
                             elevation: 0,

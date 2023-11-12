@@ -8,11 +8,11 @@ class GoToGetCarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      onPressed: () => {},
+      onPressed: () => {Navigator.pushNamed(context, "/rent/map")},
       color: const Color.fromARGB(255, 255, 255, 255),
       elevation: 0,
       padding: const EdgeInsets.all(0),
-      child: Container(
+      child: SizedBox(
         height: 150,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

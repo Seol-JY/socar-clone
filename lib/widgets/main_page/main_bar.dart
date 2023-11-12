@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
 
-class MarinBar extends StatelessWidget implements PreferredSizeWidget {
+class MainBar extends StatelessWidget implements PreferredSizeWidget {
   String titleText;
 
-  MarinBar({
+  MainBar({
     super.key,
     this.titleText = "",
   });
@@ -12,6 +12,7 @@ class MarinBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       title: Image.asset(
         "assets/MAIN_HEADER_LOGO.png",
         width: 90,
