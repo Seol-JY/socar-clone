@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:socar/fold_bottom_sheet.dart';
+import 'package:socar/bottom_modal_sheet/fold_bottom_sheet.dart';
 
 void main() {
   runApp(const MyApp());
