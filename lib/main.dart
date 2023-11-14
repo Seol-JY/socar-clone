@@ -5,6 +5,8 @@ import '../screens/login_page.dart';
 import '../screens/register_auth_page.dart';
 import '../screens/register_input_page.dart';
 
+import 'package:socar/bottom_modal_sheet/fold_bottom_sheet.dart';
+
 void main() {
   runApp(const MyApp());
 }
