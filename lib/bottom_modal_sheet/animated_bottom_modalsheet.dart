@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:socar/bottom_modal_sheet/place_widget.dart';
+import 'package:socar/bottom_modal_sheet/car_list_view.dart';
+import 'package:socar/constants/color.dart';
+
 import '../constants/fold_state_enum.dart';
 
 class AnimatedBottomModalSheet extends StatelessWidget {
@@ -27,7 +31,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
       curve: Curves.easeInBack,
       duration: Duration(milliseconds: 600),
       height: foldState == FoldState.Fold.idx ? halfScreenHeight : screenHeight,
-      color: Colors.amber,
+      color: ColorPalette.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -36,11 +40,11 @@ class AnimatedBottomModalSheet extends StatelessWidget {
             onVerticalDragEnd: (details) {
               sheetState(() {
                 // swipe-down
-                if (details.primaryVelocity! < 0) {
+                if (details.primaryVelocity! > 0) {
                   fold(true);
                 }
                 // swipe-up
-                if (details.primaryVelocity! > 0) {
+                if (details.primaryVelocity! < 0) {
                   fold(false);
                 }
               });
@@ -55,16 +59,21 @@ class AnimatedBottomModalSheet extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
-                      color: Colors.white,
+                      color: ColorPalette.gray500,
                       width: MediaQuery.of(context).size.width * 0.4,
                       height: 10,
                       alignment: Alignment.topCenter,
                     ),
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
             ),
           ),
+          const PlaceWidget(),
+          CarListView(),
         ],
       ),
     );
