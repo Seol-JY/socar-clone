@@ -6,19 +6,12 @@ import 'package:socar/complete_payment_page.dart';
 import 'package:socar/utils/term_agreement.dart';
 import 'utils/time_check.dart';
 
+
 Future<Map<String, dynamic>> loadReservationData() async {
   String jsonString = await rootBundle.loadString('assets/cars.json');
   return json.decode(jsonString);
 }
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => PriceInfo(),
-      child : MyApp()),
-    );
-    
-}
 
 Widget paddingDivider() {
     return Padding(
@@ -32,30 +25,59 @@ Widget paddingDivider() {
   }
 
 
-
-
-
-class MyApp extends StatelessWidget {
+class Reservationpaymentpage extends StatelessWidget {
   
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ReservationPayment()
-    );
+    return ReservationPayment();
+  }
+}
+
+class ReservationPayment extends StatelessWidget {
+const ReservationPayment({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+        appBar:AppBar(
+            leading:  IconButton(
+            onPressed: () {
+              Navigator.pop(context); //뒤로가기
+            },
+            color: Colors.black,
+            icon: const Icon(Icons.arrow_back)),
+            backgroundColor: Colors.transparent, //appBar 투명색
+            elevation: 0.0, //appBar 그림자 농도 설정 (값 0으로 제거)
+            ),
+
+        body : SingleChildScrollView(child : Column(children: [
+            ReservationInfo(),
+          ],
+        ),) ,
+      bottomNavigationBar: Bottompaybar(),
+      );
   }
 }
 
 
 
+
 class ReservationInfo extends StatelessWidget {
+  const ReservationInfo({super.key});
+
   @override
   Widget build(BuildContext context) {
+    String rentFee = "0";
+    String tmp = "0";
     return FutureBuilder<Map<String, dynamic>>(
       future: loadReservationData(),
       builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
             final data = snapshot.data!;
+            tmp = HourStringfromDuration(Caldatediffernce(data["StartTime"], data["EndTime"]));
+            //print("Calculated tmp value: $tmp");
+            //print("Calculated baserate value: ${data["Baserate"]}");
+            rentFee = CarFeeCal(tmp, data["Baserate"]);
             return Container(
               margin: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
               child: Column(
@@ -94,11 +116,13 @@ class ReservationInfo extends StatelessWidget {
                   paddingDivider(),
                   Usetime(startTime : data["StartTime"] , endTime : data["EndTime"]),
                   
+                  
+
                   paddingDivider(),
                   InsuranceContainer(),
 
                   paddingDivider(),
-                  Finalprice(),
+                  Finalprice(rentalFee: rentFee),
                   paddingDivider(),
                   CautionFeild(),
                   TermAgreementBoxWidget(),
@@ -116,65 +140,75 @@ class ReservationInfo extends StatelessWidget {
 }
 
 
-class ReservationPayment extends StatelessWidget {
-const ReservationPayment({ Key? key }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-        appBar:AppBar(
-            leading:  IconButton(
-            onPressed: () {
-              Navigator.pop(context); //뒤로가기
-            },
-            color: Colors.black,
-            icon: const Icon(Icons.arrow_back)),
-            backgroundColor: Colors.transparent, //appBar 투명색
-            elevation: 0.0, //appBar 그림자 농도 설정 (값 0으로 제거)
-            ),
-
-        body : SingleChildScrollView(child : Column(children: [
-            ReservationInfo(),
-          ],
-        ),) ,
-      bottomNavigationBar: Bottompaybar(),
-      );
-  }
-}
 
 
-class Bottompaybar extends StatelessWidget {
+class Bottompaybar extends StatefulWidget {
 const Bottompaybar({ Key? key }) : super(key: key);
 
+  @override
+  State<Bottompaybar> createState() => _BottompaybarState();
+}
+
+class _BottompaybarState extends State<Bottompaybar> {
   @override
   Widget build(BuildContext context){
     return BottomAppBar(
           color: Color(0xffE9EBEE),
-          child: TextButton(onPressed: (){Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context)=> const CompletePayment()),
-            );}, child: const Text("결제하기", style: TextStyle(color:Color(0xffC5C8CE), fontWeight: FontWeight.bold),), 
-            style: TextButton.styleFrom(padding:const EdgeInsets.fromLTRB(70,30,70,30),shape: RoundedRectangleBorder(side : BorderSide(color:Color(0xffE9EBEE))),)),
+          child: Consumer<PriceInfo>(
+            builder: (context, priceInfo, child){
+              final isButtonActive = (priceInfo.insprice != "0" && priceInfo.terms == true); 
+              return TextButton(
+                onPressed: (){
+                    Navigator.pushNamed(context, '/completePayment');
+                    },
+             child: const Text(
+              "결제하기",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
+              backgroundColor: isButtonActive ? Color(0xff00B8FF) : Color(0xffC5C8CE), // 버튼 활성화 상태에 따라 배경색을 변경합니다.
+              primary: Colors.white, // 텍스트 색상을 지정합니다.
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // 필요한 경우 여기에 BorderRadius 값을 조정합니다.
+                side: BorderSide(
+                  color: Color(0xffE9EBEE),
+                ),
+              ),
+            ),
+          );
+            }
+          ),
+            
           );
   }
 }
 
 
 
-
 class PriceInfo with ChangeNotifier{
   String _insprice = "0";
+  bool _terms = false;
 
   String get insprice => _insprice;
+  bool get terms => _terms;
 
   void updateInsPrice(String newPrice){
     _insprice = newPrice;
     notifyListeners();
   }
+
+  void updateterms(bool newstate){
+    _terms = newstate;
+    notifyListeners();
+  }
 }
 
 class Finalprice extends StatelessWidget {
-const Finalprice({ Key? key }) : super(key: key);
+  final String rentalFee;
+  const Finalprice({Key? key, required this.rentalFee}) : super(key: key);
 
   @override
   Widget build(BuildContext context){
@@ -192,7 +226,7 @@ const Finalprice({ Key? key }) : super(key: key);
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("요금 합계", style:TextStyle(fontSize: 13)),
-              Text("${(int.parse("10000")+ int.parse(priceInfo.insprice)).toString()}원"),
+              Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}원"),
             ],
           ),
           trailing: Icon(Icons.expand_more),
@@ -200,7 +234,7 @@ const Finalprice({ Key? key }) : super(key: key);
             ListTile(
               visualDensity: VisualDensity(vertical: -4),
               title: Text('대여 요금', style:TextStyle(fontSize: 13)),
-              trailing: Text("10000원"),
+              trailing: Text("${rentalFee}원"),
             ),
             ListTile(
               visualDensity: VisualDensity(vertical: -4),
@@ -212,7 +246,7 @@ const Finalprice({ Key? key }) : super(key: key);
         SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [Text("총 결제 금액", style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 ),), 
-        Text("${(int.parse("10000")+ int.parse(priceInfo.insprice)).toString()}  원",style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 , color: Color(0xff00B8FF)),)],),
+        Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}  원",style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 , color: Color(0xff00B8FF)),)],),
       ],
     ),
   );
@@ -354,7 +388,7 @@ const CautionFeild({ Key? key }) : super(key: key);
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children:[const Padding(padding : EdgeInsets.only(left: 20),
-          child :  Text("예약 전 주의 사항")), 
+          child :  Text("예약 전 주의 사항", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))), 
         Container(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           margin : const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -362,6 +396,21 @@ const CautionFeild({ Key? key }) : super(key: key);
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [Flexible(child :Text("취소 시점에 따라 취소 수수료나 패널티가 생길 수 있습니다.  반납 후에 결제해야 할 요금이 남아 있다면, 등록한 기본 결제 카드로 자동 결제됩니다.\n동승운전자는 운행 시작 전까지만 등록할 수 있습니다.")),],),
         ),
+        
+        SizedBox(height: 10),
+        TitleText("약관 및 이용 안내 동의"),
+        SizedBox(height: 10),
       ],));
   }
+}
+
+
+
+Widget TitleText(String titleText){
+    return Padding(
+      padding : EdgeInsets.only(left: 20),
+      child :  Text("$titleText",
+       style: TextStyle(
+        fontSize: 14, 
+        fontWeight: FontWeight.bold)));
 }
