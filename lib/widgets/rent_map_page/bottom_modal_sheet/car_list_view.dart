@@ -65,7 +65,11 @@ class CarListView extends StatelessWidget {
                         ),
                       ),
                       Spacer(),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.next_plan))
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/reservationPayment");
+                          },
+                          icon: Icon(Icons.next_plan))
                     ],
                   )
                 ],

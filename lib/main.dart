@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         ),
         home: const RentMapPage(),
         debugShowCheckedModeBanner: false,
-        initialRoute: "/main",
+        initialRoute: "/select",
         routes: {
           "/select": (context) => const LoginRegisterSelectionpage(),
           "/login": (context) => const LoginPage(),
