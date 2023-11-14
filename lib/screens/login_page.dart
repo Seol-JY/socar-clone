@@ -90,7 +90,7 @@ class LoginState extends State<LoginPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // 버튼 클릭 시 실행할 로직을 여기에 작성
+                Navigator.pushNamed(context, '/main');
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color?>(
