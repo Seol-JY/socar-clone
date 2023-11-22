@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:socar/constants/colors.dart';
 import 'dart:convert';
 import 'package:socar/screens/payment_page/complete_payment_page.dart';
 import 'package:socar/screens/payment_page/widgets/term_agreement.dart';
@@ -13,9 +14,11 @@ Future<Map<String, dynamic>> loadReservationData() async {
 }
 
 
+
+
 Widget paddingDivider() {
     return Padding(
-      padding: EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
+      padding: const EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
       child: Divider(
         thickness: 1,
         height: 1,
@@ -28,7 +31,7 @@ Widget paddingDivider() {
 class Reservationpaymentpage extends StatelessWidget {
   
   Widget build(BuildContext context) {
-    return ReservationPayment();
+    return const ReservationPayment();
   }
 }
 
@@ -49,11 +52,11 @@ const ReservationPayment({ Key? key }) : super(key: key);
             elevation: 0.0, //appBar 그림자 농도 설정 (값 0으로 제거)
             ),
 
-        body : SingleChildScrollView(child : Column(children: [
+        body : const SingleChildScrollView(child : Column(children: [
             ReservationInfo(),
           ],
         ),) ,
-      bottomNavigationBar: Bottompaybar(),
+      bottomNavigationBar: const Bottompaybar(),
       );
   }
 }
@@ -83,8 +86,8 @@ class ReservationInfo extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(padding: EdgeInsets.only(left:20), 
-                  child: const Text("예약 및 결제 확인하기", style:TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),),
+                  const Padding(padding: EdgeInsets.only(left:20), 
+                  child: Text("예약 및 결제 확인하기", style:TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),),
                   
                   Row(
                     children: [
@@ -106,7 +109,9 @@ class ReservationInfo extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [const Text("주행요금"), Text("${data["Drivingfee"]}원")],
+                      children: [
+                        const Text("주행요금", style: TextStyle(fontWeight : FontWeight.w500)), 
+                        Text("${data["Drivingfee"]}원",  style: const TextStyle(fontWeight : FontWeight.w400))],
                     ),
                   ),
                   
@@ -119,12 +124,12 @@ class ReservationInfo extends StatelessWidget {
                   
 
                   paddingDivider(),
-                  InsuranceContainer(),
+                  const InsuranceContainer(),
 
                   paddingDivider(),
                   Finalprice(rentalFee: rentFee),
                   paddingDivider(),
-                  CautionFeild(),
+                  const CautionFeild(),
                   TermAgreementBoxWidget(),
                 ],
               ),
@@ -153,7 +158,7 @@ class _BottompaybarState extends State<Bottompaybar> {
   @override
   Widget build(BuildContext context){
     return BottomAppBar(
-          color: Color(0xffE9EBEE),
+          color: const Color(0xffE9EBEE),
           child: Consumer<PriceInfo>(
             builder: (context, priceInfo, child){
               final isButtonActive = (priceInfo.insprice != "0" && priceInfo.terms == true); 
@@ -161,21 +166,22 @@ class _BottompaybarState extends State<Bottompaybar> {
                 onPressed: (){
                     Navigator.pushNamed(context, '/completePayment');
                     },
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
+              backgroundColor: isButtonActive ? const Color(0xff00B8FF) : const Color(0xffC5C8CE), // 버튼 활성화 상태에 따라 배경색을 변경합니다.
+             
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), // 필요한 경우 여기에 BorderRadius 값을 조정합니다.
+                side: const BorderSide(
+                  color: Color(0xffE9EBEE),
+                ),
+              ),
+            ),
              child: const Text(
               "결제하기",
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
-              backgroundColor: isButtonActive ? Color(0xff00B8FF) : Color(0xffC5C8CE), // 버튼 활성화 상태에 따라 배경색을 변경합니다.
-              primary: Colors.white, // 텍스트 색상을 지정합니다.
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0), // 필요한 경우 여기에 BorderRadius 값을 조정합니다.
-                side: BorderSide(
-                  color: Color(0xffE9EBEE),
-                ),
+                fontWeight: FontWeight.w700,
+                color: ColorPalette.white,
               ),
             ),
           );
@@ -215,38 +221,38 @@ class Finalprice extends StatelessWidget {
   final priceInfo = Provider.of<PriceInfo>(context);
 
   return Container(
-    padding: EdgeInsets.fromLTRB(20, 0, 20 ,0 ),
+    padding: const EdgeInsets.fromLTRB(20, 0, 20 ,0 ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:[
-        Text("최종 결제 내역"), 
+        const Text("최종 결제 내역",  style: TextStyle(fontWeight : FontWeight.w700)), 
         
         ExpansionTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("요금 합계", style:TextStyle(fontSize: 13)),
+              const Text("요금 합계", style:TextStyle(fontSize: 13 ,fontWeight : FontWeight.w500)),
               Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}원"),
             ],
           ),
-          trailing: Icon(Icons.expand_more),
+          trailing: const Icon(Icons.expand_more),
           children: <Widget>[
             ListTile(
-              visualDensity: VisualDensity(vertical: -4),
-              title: Text('대여 요금', style:TextStyle(fontSize: 13)),
-              trailing: Text("${rentalFee}원"),
+              visualDensity: const VisualDensity(vertical: -4),
+              title: const Text('대여 요금', style:TextStyle(fontSize: 13, fontWeight : FontWeight.w500)),
+              trailing: Text("${rentalFee}원", style: const TextStyle(fontWeight : FontWeight.w400)),
             ),
             ListTile(
-              visualDensity: VisualDensity(vertical: -4),
-              title: Text('면책상품 요금', style:TextStyle(fontSize: 13)),
+              visualDensity: const VisualDensity(vertical: -4),
+              title: const Text('면책상품 요금', style:TextStyle(fontSize: 13)),
               trailing: Text("${priceInfo.insprice}원"),
             ),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text("총 결제 금액", style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 ),), 
-        Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}  원",style: TextStyle(fontWeight:FontWeight.bold, fontSize: 15 , color: Color(0xff00B8FF)),)],),
+        children: [const Text("총 결제 금액", style: TextStyle(fontWeight:FontWeight.w700, fontSize: 15 ),), 
+        Text("${(int.parse(rentalFee)+ int.parse(priceInfo.insprice)).toString()}  원",style: const TextStyle(fontWeight:FontWeight.bold, fontSize: 15 , color: Color(0xff00B8FF)),)],),
       ],
     ),
   );
@@ -282,16 +288,16 @@ class _InsuranceContainerState extends State<InsuranceContainer> {
         children: [
           const Padding(
             padding: EdgeInsets.only(left: 20),
-            child: Text("자기손해면책상품", style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text("자기손해면책상품", style: TextStyle(fontWeight: FontWeight.w700)),
           ),
           
           Container(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             margin : const EdgeInsets.fromLTRB(20, 5, 20, 5),
-            child: Column(children: [Row(
+            child: Column(children: [const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Flexible(child: Text("운행 중 일어난 사고로 쏘카 차를 수리할 때, 회원님이 부담할 자기부담금 최고액을 고르세요.\n*이용 기간 안에 신고한 차 손상만 차량손해면책제도를 적용 받을 수 있으니, 차가 손상됐을 땐 바로 신고하세요.")),
+              Flexible(child: Text("운행 중 일어난 사고로 쏘카 차를 수리할 때, 회원님이 부담할 자기부담금 최고액을 고르세요.\n*이용 기간 안에 신고한 차 손상만 차량손해면책제도를 적용 받을 수 있으니, 차가 손상됐을 땐 바로 신고하세요.", style:TextStyle(fontWeight: FontWeight.w400))),
             ],
           ),
           _buildRadioOption("자기부담금 없음", "+32,130", "32130"),
@@ -318,8 +324,8 @@ class _InsuranceContainerState extends State<InsuranceContainer> {
               onChanged: _handleRadioValueChange,
             ),
           ),
-          Expanded(flex: 7, child: Text(title)),
-          Expanded(flex: 2, child: Text(price)),
+          Expanded(flex: 7, child: Text(title, style: const TextStyle(fontWeight : FontWeight.w400))),
+          Expanded(flex: 2, child: Text(price, style: const TextStyle(fontWeight : FontWeight.w400))),
         ],
       ),
     );
@@ -336,7 +342,7 @@ class Returnlocation extends StatelessWidget {
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children:[const Padding(padding : EdgeInsets.only(left: 20),
-            child :  Text("대여 반납 장소 공간")), 
+            child :  Text("대여 반납 장소 공간", style: TextStyle(fontWeight : FontWeight.w500))), 
           Container(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
             margin : const EdgeInsets.fromLTRB(20, 10, 20, 5),
@@ -360,7 +366,7 @@ class Usetime extends StatelessWidget {
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children:[const Padding(padding : EdgeInsets.only(left: 20),
-            child :  Text("이용 시간")), 
+            child :  Text("이용 시간", style: TextStyle(fontWeight : FontWeight.w700))), 
           Container(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             margin : const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -368,11 +374,10 @@ class Usetime extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column( 
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                 Text("총 ${HourStringfromDuration(Caldatediffernce(startTime, endTime))} 시간 이용"),
                 Text("${StringFormatFromTime(startTime)} ~ ${StringFormatFromTime(endTime)}")],),
-              TextButton(onPressed: (){}, child: const Text("바꾸기"))
           ],)),
         ],));
     }
@@ -392,14 +397,14 @@ const CautionFeild({ Key? key }) : super(key: key);
         Container(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           margin : const EdgeInsets.fromLTRB(20, 5, 20, 5),
-          child :Row(
+          child :const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Flexible(child :Text("취소 시점에 따라 취소 수수료나 패널티가 생길 수 있습니다.  반납 후에 결제해야 할 요금이 남아 있다면, 등록한 기본 결제 카드로 자동 결제됩니다.\n동승운전자는 운행 시작 전까지만 등록할 수 있습니다.")),],),
+          children: [Flexible(child :Text("취소 시점에 따라 취소 수수료나 패널티가 생길 수 있습니다.  반납 후에 결제해야 할 요금이 남아 있다면, 등록한 기본 결제 카드로 자동 결제됩니다.\n동승운전자는 운행 시작 전까지만 등록할 수 있습니다.", style: TextStyle(fontWeight : FontWeight.w400))),],),
         ),
         
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         TitleText("약관 및 이용 안내 동의"),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
       ],));
   }
 }
@@ -408,9 +413,9 @@ const CautionFeild({ Key? key }) : super(key: key);
 
 Widget TitleText(String titleText){
     return Padding(
-      padding : EdgeInsets.only(left: 20),
+      padding : const EdgeInsets.only(left: 20),
       child :  Text("$titleText",
-       style: TextStyle(
-        fontSize: 14, 
-        fontWeight: FontWeight.bold)));
+       style: const TextStyle(
+        fontSize: 13, 
+        fontWeight: FontWeight.w400)));
 }
