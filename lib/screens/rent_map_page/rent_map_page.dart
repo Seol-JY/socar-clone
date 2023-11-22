@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:socar/constants/colors.dart';
 import 'package:socar/widgets/nav_drawer.dart';
-import 'package:socar/widgets/rent_map_page/rent_app_bar.dart';
-import 'package:socar/widgets/rent_map_page/time_select_btn.dart';
+import 'package:socar/screens/rent_map_page/widgets/rent_app_bar.dart';
+import 'package:socar/screens/rent_map_page/widgets/time_select_btn.dart';
 import 'package:socar/constants/fold_state_enum.dart';
-import 'package:socar/widgets/rent_map_page/bottom_modal_sheet/animated_bottom_modalsheet.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/animated_bottom_modalsheet.dart';
 
 class RentMapPage extends StatefulWidget {
   const RentMapPage({super.key});

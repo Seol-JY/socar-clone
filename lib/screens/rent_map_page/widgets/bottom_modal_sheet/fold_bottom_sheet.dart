@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../constants/fold_state_enum.dart';
+import '../../../../constants/fold_state_enum.dart';
 import 'animated_bottom_modalsheet.dart';
 
 class FoldBottomSheet extends StatefulWidget {

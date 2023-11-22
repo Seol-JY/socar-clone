@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:socar/widgets/main_page/go_to_get_car.dart';
-import 'package:socar/widgets/main_page/main_bar.dart';
+import 'package:socar/screens/main_page/widgets/go_to_get_car.dart';
+import 'package:socar/screens/main_page/widgets/main_bar.dart';
+import 'package:socar/screens/main_page/widgets/reservation_car.dart';
 import 'package:socar/widgets/nav_drawer.dart';
-import 'package:socar/widgets/main_page/reservation_car.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});

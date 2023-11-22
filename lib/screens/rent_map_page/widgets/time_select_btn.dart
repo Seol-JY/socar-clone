@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
-import 'package:socar/widgets/rent_map_page/time_select_modal_utils.dart';
+import 'package:socar/screens/rent_map_page/widgets/time_select_modal_utils.dart';
 
 class TimeSelectBtn extends StatelessWidget {
   const TimeSelectBtn({super.key});
