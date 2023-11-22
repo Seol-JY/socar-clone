@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socar/widgets/app_bar.dart';
-import 'package:socar/widgets/register_page/title_textform.dart';
+import 'package:socar/screens/register_input_page/widgets/title_textform.dart';
 
 class RegisterInputPage extends StatefulWidget {
   const RegisterInputPage({super.key});

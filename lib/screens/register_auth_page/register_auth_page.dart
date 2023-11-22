@@ -2,11 +2,11 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:socar/screens/register_input_page.dart';
+import 'package:socar/screens/register_input_page/register_input_page.dart';
 import 'package:socar/widgets/app_bar.dart';
-import 'package:socar/widgets/register_page/term_agreement.dart';
-import 'package:socar/widgets/register_page/dropdown_text_field_in_row.dart';
-import 'package:socar/widgets/register_page/security_number_input.dart';
+import 'package:socar/widgets/term_agreement.dart';
+import 'package:socar/screens/register_auth_page/widgets/dropdown_text_field_in_row.dart';
+import 'package:socar/screens/register_auth_page/widgets/security_number_input.dart';
 
 class RegisterAuthPage extends StatefulWidget {
   const RegisterAuthPage({super.key});
