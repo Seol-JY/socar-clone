@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:socar/constants/color.dart';
-import 'package:socar/widgets/rent_map_page/bottom_modal_sheet/icon_row.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/icon_row.dart';
 
 class PlaceWidget extends StatelessWidget {
   const PlaceWidget({Key? key}) : super(key: key);

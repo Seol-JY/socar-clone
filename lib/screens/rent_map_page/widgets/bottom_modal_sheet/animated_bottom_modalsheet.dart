@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:socar/widgets/rent_map_page/bottom_modal_sheet/place_widget.dart';
-import 'package:socar/widgets/rent_map_page/bottom_modal_sheet/car_list_view.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/place_widget.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/car_list_view.dart';
 import 'package:socar/constants/color.dart';
 
-import '../../../constants/fold_state_enum.dart';
+import '../../../../constants/fold_state_enum.dart';
 
 class AnimatedBottomModalSheet extends StatelessWidget {
   const AnimatedBottomModalSheet({
