@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socar/reservation_confirm_page.dart';
+import 'package:socar/screens/smart_key_page/reservation_confirm_page.dart';
 
 //Color(0xff00B8FF) 파랑
 //Color(0xff374553) 회

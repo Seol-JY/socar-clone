@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socar/utils/smartkey_bottom_bar.dart';
+import 'package:socar/screens/smart_key_page/widgets/smartkey_bottom_bar.dart';
 
 
 //Color(0xff00B8FF) 파랑

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:socar/complete_payment_page.dart';
-import 'package:socar/utils/term_agreement.dart';
+import 'package:socar/screens/payment_page/complete_payment_page.dart';
+import 'package:socar/screens/payment_page/widgets/term_agreement.dart';
 import 'utils/time_check.dart';
 
 

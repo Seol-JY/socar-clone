@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:socar/reservation_payment_page.dart';
+import 'package:socar/screens/payment_page/reservation_payment_page.dart';
 
 
 
