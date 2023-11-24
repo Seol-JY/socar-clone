@@ -8,11 +8,13 @@ class DropDownTextFieldInRowWidget extends StatefulWidget {
   TextInputFormatter? inputFormatter;
   TextInputType? textInputType;
   TextEditingController? textController;
+  void Function(String value) setDropdownValue;
 
   DropDownTextFieldInRowWidget(
       {Key? key,
       required this.selectedDropdown,
       required this.dropdownList,
+      required this.setDropdownValue,
       this.inputFormatter,
       this.textInputType,
       this.helperText,
@@ -49,7 +51,7 @@ class _DropDownTextFieldInRowState extends State<DropDownTextFieldInRowWidget> {
               value: widget.selectedDropdown, // 현재 선택된 값
               onChanged: (String? newValue) {
                 setState(() {
-                  widget.selectedDropdown = newValue ?? '내국인';
+                  widget.setDropdownValue(newValue!);
                 });
               },
               items: widget.dropdownList

@@ -9,7 +9,10 @@ import 'package:socar/screens/register_auth_page/widgets/dropdown_text_field_in_
 import 'package:socar/screens/register_auth_page/widgets/security_number_input.dart';
 
 class RegisterAuthPage extends StatefulWidget {
-  const RegisterAuthPage({super.key});
+  String selectedForeign = "내국인";
+  String selectedAgency = "선택";
+
+  RegisterAuthPage({super.key});
 
   @override
   State<RegisterAuthPage> createState() {
@@ -55,6 +58,17 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    setForeignDropdownValue(value) {
+      widget.selectedForeign = value;
+      print(widget.selectedForeign);
+    }
+
+    setAgencyDropdownValue(value) {
+      widget.selectedAgency = value;
+
+      print(widget.selectedAgency);
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xfff8f9fb),
       appBar: CustomAppBar(
@@ -83,9 +97,10 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                   height: 10,
                 ),
                 DropDownTextFieldInRowWidget(
-                  selectedDropdown: "내국인",
+                  selectedDropdown: widget.selectedForeign,
                   dropdownList: const ["내국인", "외국인"],
                   helperText: "본인 실명(통신사 가입 이름)",
+                  setDropdownValue: setForeignDropdownValue,
                   textController: usernameController,
                 ),
                 const SizedBox(
@@ -114,9 +129,10 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                   height: 10,
                 ),
                 DropDownTextFieldInRowWidget(
-                  selectedDropdown: "선택",
+                  selectedDropdown: widget.selectedAgency,
                   dropdownList: const ["선택", "SKT", "LG+", "KT", "알뜰폰"],
                   helperText: "휴대폰 번호 입력",
+                  setDropdownValue: setAgencyDropdownValue,
                   inputFormatter: FilteringTextInputFormatter.digitsOnly,
                   textInputType: TextInputType.number,
                   textController: phoneNumberController,
