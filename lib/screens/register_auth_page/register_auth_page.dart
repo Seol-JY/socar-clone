@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:socar/screens/register_auth_page/utils/timerUtil.dart';
+import 'package:socar/screens/register_auth_page/widgets/verify_code_input.dart';
 import 'package:socar/screens/register_input_page/register_input_page.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/term_agreement.dart';
@@ -20,25 +21,20 @@ class RegisterAuthPage extends StatefulWidget {
 }
 
 class RegisterAuthPageState extends State<RegisterAuthPage> {
-  bool isAuthCodeEntered = false;
   bool isAuthCodeSended = false;
-
   TextEditingController usernameController = TextEditingController();
   TextEditingController authCodeController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
 
   TermAgreementBoxWidget termAgreementBoxWidget = TermAgreementBoxWidget();
-
-  late TimerUtil timer;
+  late TimerUtil timerUtil;
 
   @override
   void initState() {
     super.initState();
 
-    timer = TimerUtil(setWidgetState: () {
-      setState(() {
-        timer.getTimerText();
-      });
+    timerUtil = TimerUtil(setWidgetState: () {
+      setState(() {});
     });
 
     usernameController.addListener(() {
@@ -47,16 +43,6 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
 
     phoneNumberController.addListener(() {
       setState(() {});
-    });
-
-    authCodeController.addListener(() {
-      if (authCodeController.text.length != 6) {
-        return;
-      }
-
-      setState(() {
-        isAuthCodeEntered = true;
-      });
     });
   }
 
@@ -174,58 +160,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 ),
                 Visibility(
                   visible: isAuthCodeSended,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: const Color(0xffe9ebee),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                flex: 2,
-                                child: TextField(
-                                  controller: authCodeController,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hoverColor: Colors.white,
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(
-                                        color:
-                                            Colors.grey), // placeholder 텍스트 스타일
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 1,
-                              child: TextField(
-                                readOnly: true,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  hoverColor: Colors.white,
-                                  border: InputBorder.none,
-                                  hintText: timer.getTimerText(),
-                                  hintStyle: const TextStyle(
-                                      color: Color(
-                                    0xffff2c51,
-                                  )), // placeholder 텍스트 스타일
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                  child: VerifyCodeInput(
+                    inputController: authCodeController,
+                    timerText: timerUtil.getTimerText(),
                   ),
                 ),
                 const SizedBox(
@@ -242,11 +179,11 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
             )),
       ),
       bottomNavigationBar: Material(
-        color: isAuthCodeEntered
+        color: isAuthCodeEntered()
             ? const Color(0xff00b8ff)
             : const Color(0xffe9ebee),
         child: InkWell(
-          onTap: isAuthCodeEntered
+          onTap: isAuthCodeEntered()
               ? () {
                   Navigator.pushNamed(context, "/register/input",
                       arguments: InputPageArguments(
@@ -261,7 +198,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 '인증 완료',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: isAuthCodeEntered
+                  color: isAuthCodeEntered()
                       ? Colors.white
                       : const Color(0xffc5c8ce),
                 ),
@@ -278,7 +215,8 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     // 1. 모든 Input을 채우고 인증번호 전송 버튼 클릭
     // 2. 인증번호 전송을 1회 이상 하고, 타이머가 0:00로 종료된 경우
 
-    return ((!isAuthCodeSended) || (isAuthCodeSended && timer.isTimerDone())) &&
+    return ((!isAuthCodeSended) ||
+            (isAuthCodeSended && timerUtil.isTimerDone())) &&
         termAgreementBoxWidget.isAllTermChecked &&
         phoneNumberController.text.length >= 11 &&
         usernameController.text.isNotEmpty;
@@ -290,14 +228,11 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     }
     setState(() {
       isAuthCodeSended = true;
-      timer.runTimer();
+      timerUtil.runTimer();
     });
   }
 
-  @override
-  void dispose() {
-    // 화면이 종료될 때 Timer를 취소합니다.
-    timer.cancel();
-    super.dispose();
+  bool isAuthCodeEntered() {
+    return authCodeController.text.length == 6;
   }
 }
