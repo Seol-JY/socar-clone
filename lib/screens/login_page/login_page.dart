@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socar/widgets/app_bar.dart';
+import 'package:socar/utils/user_input_validator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,21 +12,96 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginState extends State<LoginPage> {
-  final TextEditingController _controller = TextEditingController();
-  bool isEnabled = false; // 초기값
+  final TextEditingController _idController = TextEditingController();
+
+  final TextEditingController _pwController = TextEditingController();
+
+  final UserInputValidator _inputValidator = UserInputValidator();
+
+  bool isEnabled() {
+    final String email = _idController.text;
+    final String password = _pwController.text;
+    return _inputValidator.validEmailFormat(email) &&
+        _inputValidator.validPasswordFormat(password);
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      setState(() {
-        isEnabled = _controller.text.isNotEmpty;
-      });
+    _idController.addListener(() {
+      setState(() {});
     });
+    _pwController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  void doAuthenticate() {
+    // TODO : 로그인 검증 필요
+    Navigator.pushNamed(context, '/main');
   }
 
   @override
   Widget build(BuildContext context) {
+    // ------------ Style 정의 ------------
+    TextStyle titleStyle = const TextStyle(
+      fontSize: 30,
+      fontWeight: FontWeight.w600,
+    );
+
+    InputDecoration idInputField = const InputDecoration(
+      hintText: "가입한 이메일 주소 입력",
+      hintStyle: TextStyle(
+        color: Color(0xffc5c5c7),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xffe9ebee), width: 1.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xff00b8ff), width: 2.0),
+      ),
+    );
+
+    InputDecoration pwInputField = const InputDecoration(
+      hintText: "비밀번호 입력",
+      hintStyle: TextStyle(
+        color: Color(0xffc5c5c7),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xffe9ebee),
+          width: 1.0,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0xff00b8ff),
+          width: 2.0,
+        ),
+      ),
+    );
+
+    ButtonStyle loginButtonStyle = ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          // 두 상태가 모두 true일 때
+          if (isEnabled()) {
+            return const Color(0xff00b8ff);
+          }
+          // 기타 상황 (예: 버튼이 비활성화 상태일 때)
+          return const Color(0xffe9ebee);
+        },
+      ),
+      elevation: MaterialStateProperty.all(0),
+    );
+
+    TextStyle loginButtonTextStyle = TextStyle(
+      color: isEnabled()
+          ? Colors.white
+          : Colors.grey, // isEnabled 상태에 따른 텍스트 색상 설정
+    );
+
+    // ------------ Layout 정의 ------------
     return Scaffold(
       appBar: CustomAppBar(),
       body: Padding(
@@ -36,84 +112,36 @@ class LoginState extends State<LoginPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               "로그인",
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-              ),
+              style: titleStyle,
             ),
             const SizedBox(
               height: 30,
             ),
             TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: "가입한 이메일 주소 입력",
-                hintStyle: TextStyle(
-                  color: Color(0xffc5c5c7),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xffe9ebee), width: 1.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff00b8ff), width: 2.0),
-                ),
-              ),
+              controller: _idController,
+              decoration: idInputField,
             ),
             const SizedBox(
               height: 10,
             ),
-            const TextField(
+            TextField(
+              controller: _pwController,
               obscureText: true,
-              decoration: InputDecoration(
-                hintText: "비밀번호 입력",
-                hintStyle: TextStyle(
-                  color: Color(0xffc5c5c7),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xffe9ebee),
-                    width: 1.0,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xff00b8ff),
-                    width: 2.0,
-                  ),
-                ),
-              ),
+              decoration: pwInputField,
             ),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/main');
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                    // 두 상태가 모두 true일 때
-                    if (isEnabled) {
-                      return const Color(0xff00b8ff);
-                    }
-                    // 기타 상황 (예: 버튼이 비활성화 상태일 때)
-                    return const Color(0xffe9ebee);
-                  },
-                ),
-                elevation: MaterialStateProperty.all(0),
-              ),
+              onPressed: doAuthenticate,
+              style: loginButtonStyle,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Text(
                   '로그인하기',
-                  style: TextStyle(
-                    color: isEnabled
-                        ? Colors.white
-                        : Colors.grey, // isEnabled 상태에 따른 텍스트 색상 설정
-                  ),
+                  style: loginButtonTextStyle,
                 ),
               ),
             ),

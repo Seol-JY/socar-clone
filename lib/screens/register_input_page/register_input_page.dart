@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/screens/register_input_page/widgets/title_textform.dart';
+import 'package:socar/utils/user_input_validator.dart';
 
 class RegisterInputPage extends StatefulWidget {
   const RegisterInputPage({super.key});
@@ -12,22 +13,23 @@ class RegisterInputPage extends StatefulWidget {
 }
 
 class _RegisterInputState extends State<RegisterInputPage> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController pwController = TextEditingController();
-  TextEditingController pwValidController = TextEditingController();
+  final UserInputValidator inputValidator = UserInputValidator();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _pwController = TextEditingController();
+  final TextEditingController _pwValidController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    emailController.addListener(() {
+    _emailController.addListener(() {
       setState(() {});
     });
-    pwController.addListener(() {
+    _pwController.addListener(() {
       setState(() {});
     });
 
-    pwValidController.addListener(() {
+    _pwValidController.addListener(() {
       setState(() {});
     });
   }
@@ -74,19 +76,19 @@ class _RegisterInputState extends State<RegisterInputPage> {
             TitleTextFormWidget(
               title: "아이디",
               hintText: "이메일 주소 입력",
-              controller: emailController,
+              controller: _emailController,
             ),
             TitleTextFormWidget(
               title: "비밀번호",
               hintText: "영문, 숫자 포함 8자리 이상 입력",
               obSecure: true,
-              controller: pwController,
+              controller: _pwController,
             ),
             TitleTextFormWidget(
               title: "비밀번호 확인",
               hintText: "비밀번호 재입력",
               obSecure: true,
-              controller: pwValidController,
+              controller: _pwValidController,
             ),
           ]),
         ),
@@ -134,7 +136,7 @@ class _RegisterInputState extends State<RegisterInputPage> {
     final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
 
     // 정규 표현식과 문자열을 비교하여 형식이 일치하는지 확인
-    bool validEmail = emailRegExp.hasMatch(emailController.text);
+    bool validEmail = emailRegExp.hasMatch(_emailController.text);
 
     if (!validEmail) {
       return false;
@@ -148,8 +150,8 @@ class _RegisterInputState extends State<RegisterInputPage> {
     final passwordRegExp = RegExp(r'^(?=.*[A-Za-z])(?=.*\d).{8,}$');
 
     // 정규 표현식과 문자열을 비교하여 형식이 일치하는지 확인
-    return passwordRegExp.hasMatch(pwController.text) &&
-        (pwController.text == pwValidController.text);
+    return passwordRegExp.hasMatch(_pwController.text) &&
+        (_pwController.text == _pwValidController.text);
   }
 
   bool doRegister() {
