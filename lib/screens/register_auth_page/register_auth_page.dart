@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:socar/screens/register_auth_page/utils/timerUtil.dart';
 import 'package:socar/screens/register_auth_page/widgets/verify_code_input.dart';
 import 'package:socar/screens/register_input_page/register_input_page.dart';
+import 'package:socar/services/user_auth_service.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/term_agreement.dart';
 import 'package:socar/screens/register_auth_page/widgets/dropdown_text_field_in_row.dart';
@@ -11,6 +12,7 @@ import 'package:socar/screens/register_auth_page/widgets/security_number_input.d
 class RegisterAuthPage extends StatefulWidget {
   String selectedForeign = "내국인";
   String selectedAgency = "선택";
+  UserAuthenticateService userAuthService = UserAuthenticateService();
 
   RegisterAuthPage({super.key});
 
@@ -52,6 +54,14 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     TextStyle infoTextStyle = const TextStyle(
       fontSize: 18,
     );
+
+    TextStyle bottomButtonTextStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      color: isAuthCodeEntered() ? Colors.white : const Color(0xffc5c8ce),
+    );
+
+    Color bottomButtonColor =
+        isAuthCodeEntered() ? const Color(0xff00b8ff) : const Color(0xffe9ebee);
 
     // lambda Function 정의
     setForeignDropdownValue(value) {
@@ -179,29 +189,25 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
             )),
       ),
       bottomNavigationBar: Material(
-        color: isAuthCodeEntered()
-            ? const Color(0xff00b8ff)
-            : const Color(0xffe9ebee),
+        color: bottomButtonColor,
         child: InkWell(
-          onTap: isAuthCodeEntered()
-              ? () {
-                  Navigator.pushNamed(context, "/register/input",
-                      arguments: InputPageArguments(
-                          username: usernameController.text));
-                }
-              : null,
+          onTap: () {
+            if (!isAuthCodeEntered() ||
+                !widget.userAuthService.isAuthenticateSucceed()) {
+              return;
+            }
+
+            Navigator.pushNamed(context, "/register/input",
+                arguments:
+                    InputPageArguments(username: usernameController.text));
+          },
           child: SizedBox(
             height: kToolbarHeight,
             width: double.infinity,
             child: Center(
               child: Text(
                 '인증 완료',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isAuthCodeEntered()
-                      ? Colors.white
-                      : const Color(0xffc5c8ce),
-                ),
+                style: bottomButtonTextStyle,
               ),
             ),
           ),
