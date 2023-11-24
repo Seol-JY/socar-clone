@@ -1,7 +1,6 @@
-import 'dart:io';
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:socar/screens/register_auth_page/utils/timerUtil.dart';
 import 'package:socar/screens/register_input_page/register_input_page.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/term_agreement.dart';
@@ -21,13 +20,8 @@ class RegisterAuthPage extends StatefulWidget {
 }
 
 class RegisterAuthPageState extends State<RegisterAuthPage> {
-  bool isAuthCompleted = false;
-  bool isAuthStarted = false;
-  bool isPhoneNumberEntered = false;
-
-  String timerText = "3:00";
-  int timerTime = 180;
-  Timer? timer;
+  bool isAuthCodeEntered = false;
+  bool isAuthCodeSended = false;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController authCodeController = TextEditingController();
@@ -35,38 +29,51 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
 
   TermAgreementBoxWidget termAgreementBoxWidget = TermAgreementBoxWidget();
 
+  late TimerUtil timer;
+
   @override
   void initState() {
     super.initState();
 
-    authCodeController.addListener(() {
-      if (authCodeController.text.length == 6) {
-        setState(() {
-          isAuthCompleted = true;
-        });
-      }
+    timer = TimerUtil(setWidgetState: () {
+      setState(() {
+        timer.getTimerText();
+      });
+    });
+
+    usernameController.addListener(() {
+      setState(() {});
     });
 
     phoneNumberController.addListener(() {
-      if (phoneNumberController.text.length == 11) {
-        setState(() {
-          isPhoneNumberEntered = true;
-        });
+      setState(() {});
+    });
+
+    authCodeController.addListener(() {
+      if (authCodeController.text.length != 6) {
+        return;
       }
+
+      setState(() {
+        isAuthCodeEntered = true;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // style 정의
+    TextStyle infoTextStyle = const TextStyle(
+      fontSize: 18,
+    );
+
+    // lambda Function 정의
     setForeignDropdownValue(value) {
       widget.selectedForeign = value;
-      print(widget.selectedForeign);
     }
 
     setAgencyDropdownValue(value) {
       widget.selectedAgency = value;
-
-      print(widget.selectedAgency);
     }
 
     return Scaffold(
@@ -106,11 +113,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
+                Text(
                   "주민등록번호 앞 7자리",
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
+                  style: infoTextStyle,
                 ),
                 const SizedBox(
                   height: 10,
@@ -119,11 +124,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
+                Text(
                   "휴대폰 정보",
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
+                  style: infoTextStyle,
                 ),
                 const SizedBox(
                   height: 10,
@@ -155,22 +158,11 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: isSendButtonEnabled()
-                              ? () {
-                                  if (timerTime != 180) {
-                                    return;
-                                  }
-
-                                  setState(() {
-                                    isAuthStarted = true;
-                                    runTimer();
-                                  });
-                                }
-                              : null,
+                          onPressed: sendVerifyCode,
                           child: Text(
-                            isAuthStarted ? "재전송" : "인증 번호 발송",
+                            isAuthCodeSended ? "재전송" : "인증 번호 발송",
                             style: TextStyle(
-                              color: isSendButtonEnabled()
+                              color: isReadyToSendVerifyCode()
                                   ? const Color(0xff02b8ff)
                                   : Colors.grey,
                             ),
@@ -181,7 +173,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                   ),
                 ),
                 Visibility(
-                  visible: isAuthStarted,
+                  visible: isAuthCodeSended,
                   child: Column(
                     children: [
                       const SizedBox(
@@ -222,7 +214,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                                   fillColor: Colors.white,
                                   hoverColor: Colors.white,
                                   border: InputBorder.none,
-                                  hintText: timerText,
+                                  hintText: timer.getTimerText(),
                                   hintStyle: const TextStyle(
                                       color: Color(
                                     0xffff2c51,
@@ -250,10 +242,11 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
             )),
       ),
       bottomNavigationBar: Material(
-        color:
-            isAuthCompleted ? const Color(0xff00b8ff) : const Color(0xffe9ebee),
+        color: isAuthCodeEntered
+            ? const Color(0xff00b8ff)
+            : const Color(0xffe9ebee),
         child: InkWell(
-          onTap: isAuthCompleted
+          onTap: isAuthCodeEntered
               ? () {
                   Navigator.pushNamed(context, "/register/input",
                       arguments: InputPageArguments(
@@ -268,8 +261,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 '인증 완료',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color:
-                      isAuthCompleted ? Colors.white : const Color(0xffc5c8ce),
+                  color: isAuthCodeEntered
+                      ? Colors.white
+                      : const Color(0xffc5c8ce),
                 ),
               ),
             ),
@@ -279,32 +273,31 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     );
   }
 
-  void runTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timerTime < 0) {
-        timer.cancel();
-      } else {
-        int min = timerTime ~/ 60;
-        int sec = timerTime % 60;
+  bool isReadyToSendVerifyCode() {
+    // 인증 코드를 전송하는 경우는 2가지가 존재함.
+    // 1. 모든 Input을 채우고 인증번호 전송 버튼 클릭
+    // 2. 인증번호 전송을 1회 이상 하고, 타이머가 0:00로 종료된 경우
 
-        setState(() {
-          timerText = '$min:${sec.toString().padLeft(2, '0')}';
-        });
-        timerTime--;
-      }
-    });
+    return ((!isAuthCodeSended) || (isAuthCodeSended && timer.isTimerDone())) &&
+        termAgreementBoxWidget.isAllTermChecked &&
+        phoneNumberController.text.length >= 11 &&
+        usernameController.text.isNotEmpty;
   }
 
-  bool isSendButtonEnabled() {
-    print(termAgreementBoxWidget.isAllTermChecked);
-    return ((!isAuthStarted) || (isAuthStarted && timerTime <= 0)) &&
-        isPhoneNumberEntered;
+  void sendVerifyCode() {
+    if (!isReadyToSendVerifyCode()) {
+      return;
+    }
+    setState(() {
+      isAuthCodeSended = true;
+      timer.runTimer();
+    });
   }
 
   @override
   void dispose() {
     // 화면이 종료될 때 Timer를 취소합니다.
-    timer?.cancel();
+    timer.cancel();
     super.dispose();
   }
 }
