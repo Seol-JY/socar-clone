@@ -44,6 +44,8 @@ class _RentMapPageState extends State<RentMapPage> {
     for (var nMarker in _nMarkers) {
       nMarker.setIcon(_getMarkerIcon(nMarker.info.id));
     }
+
+    focusMarkerPosition(markerId);
   }
 
   void _permission() async {
@@ -96,8 +98,9 @@ class _RentMapPageState extends State<RentMapPage> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        bottomSheetTheme:
-            const BottomSheetThemeData(backgroundColor: Colors.transparent),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+        ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: ColorPalette.white,
           elevation: 2,
@@ -114,32 +117,46 @@ class _RentMapPageState extends State<RentMapPage> {
               _permission();
               await moveCurrentPosition();
             },
-            child: const Icon(Icons.my_location,
-                color: ColorPalette.gray600, size: 18),
+            child: const Icon(
+              Icons.my_location,
+              color: ColorPalette.gray600,
+              size: 18,
+            ),
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        body: NaverMap(
-          options: const NaverMapViewOptions(
-            contentPadding: EdgeInsets.only(bottom: 60),
-            scaleBarEnable: false,
-          ),
-          onMapTapped: (NPoint point, NLatLng latLng) {
-            // 맵 클릭시 상태 초기화
-            _setMarkerId("-1");
-          },
-          onMapReady: (controller) async {
-            // 지도 컨트롤러 세팅
-            mapController = controller;
-            // 지도에 마커 렌더링
-            mapController?.addOverlayAll(_nMarkers);
-            mapController
-                ?.setLocationTrackingMode(NLocationTrackingMode.noFollow);
-            // 현재 위치로 이동 (위치 권한 확인)
-            moveCurrentPosition(init: true);
-          },
+        body: Stack(
+          children: [
+            NaverMap(
+              options: const NaverMapViewOptions(
+                rotationGesturesEnable: false,
+                contentPadding: EdgeInsets.only(bottom: 60),
+                scaleBarEnable: false,
+              ),
+              onMapTapped: (NPoint point, NLatLng latLng) {
+                // 맵 클릭 시 상태 초기화
+                _setMarkerId("-1");
+              },
+              onMapReady: (controller) async {
+                // 지도 컨트롤러 설정
+                mapController = controller;
+                // 지도에 마커 렌더링
+                mapController?.addOverlayAll(_nMarkers);
+                mapController
+                    ?.setLocationTrackingMode(NLocationTrackingMode.noFollow);
+                // 현재 위치로 이동 (위치 권한 확인)
+                moveCurrentPosition(init: true);
+              },
+            ),
+            Positioned(
+              bottom: (_markerId != -1) ? null : 0,
+              top: (_markerId != -1) ? 0 : null,
+              left: 0,
+              right: 0,
+              child: const TimeSelectBtn(),
+            )
+          ],
         ),
-        bottomSheet: const TimeSelectBtn(),
       ),
     );
   }
@@ -155,5 +172,23 @@ class _RentMapPageState extends State<RentMapPage> {
           animation: NCameraAnimation.none, duration: Duration(seconds: 0));
     }
     mapController?.updateCamera(nCameraUpdate);
+  }
+
+  Future<void> focusMarkerPosition(String markerId) async {
+    for (var nMarker in _nMarkers) {
+      if (nMarker.info.id == markerId) {
+        NCameraUpdate nCameraUpdate =
+            NCameraUpdate.withParams(zoom: 16, target: nMarker.position);
+
+        nCameraUpdate.setPivot(const NPoint(1 / 2, 1 / 3));
+        mapController?.updateCamera(nCameraUpdate);
+        return;
+      }
+
+      // focus out의 경우
+      NCameraUpdate nCameraUpdate = NCameraUpdate.withParams(zoom: 14);
+      nCameraUpdate.setPivot(const NPoint(1 / 2, 3 / 5));
+      mapController?.updateCamera(nCameraUpdate);
+    }
   }
 }
