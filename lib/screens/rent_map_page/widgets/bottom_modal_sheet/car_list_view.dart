@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:socar/car_data/car_data.dart';
-import 'package:socar/constants/color.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/text_styles.dart';
+import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 
 class CarListView extends StatelessWidget {
   @override
@@ -21,8 +22,7 @@ class CarListView extends StatelessWidget {
                     children: [
                       Text(
                         carData.car.modelName,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                        style: carNameStyle,
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -34,7 +34,7 @@ class CarListView extends StatelessWidget {
                         margin: EdgeInsets.all(10),
                         child: Text(
                           carData.car.driveFee.toString() + "원/km",
-                          style: TextStyle(color: Colors.black, fontSize: 10),
+                          style: driveFeeStyle,
                         ),
                       ),
                     ],
@@ -43,16 +43,12 @@ class CarListView extends StatelessWidget {
                     children: [
                       Text(
                         "50%",
-                        style: TextStyle(
-                          color: ColorPalette.socarBlue,
-                        ),
+                        style: socarBlueStyle,
                       ),
-                      SizedBox(width: 10),
+                      PaddingBox(width: 10, height: 0),
                       Text(
                         "25,560원",
-                        style: TextStyle(
-                            color: ColorPalette.gray400,
-                            decoration: TextDecoration.lineThrough),
+                        style: rentFeeStyle,
                       )
                     ],
                   ),
@@ -60,9 +56,7 @@ class CarListView extends StatelessWidget {
                     children: [
                       Text(
                         "5,900원",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+                        style: discountRentFeeStyle,
                       ),
                       Spacer(),
                       IconButton(

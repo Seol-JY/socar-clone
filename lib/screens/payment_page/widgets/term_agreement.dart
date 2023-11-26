@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:socar/reservation_payment_page.dart';
+import 'package:socar/screens/payment_page/reservation_payment_page.dart';
 
 
 
@@ -54,7 +54,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
     
     final priceInfo = Provider.of<PriceInfo>(context, listen:false);
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.transparent, // 배경색을 흰색으로 설정
       ),
       
@@ -78,7 +78,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
           ],
         ),
         
-        subtitle: Padding(padding: const EdgeInsets.only(top:5),child : Text("쏘카자동차대여약관, 쏘카 차량손해면책제도 이용약관, 개인정보 수집 및 이용동의, 개인정보 제3자 제공 동의, 위치정보 이용약관"),),
+        subtitle: const Padding(padding: EdgeInsets.only(top:5),child : Text("쏘카자동차대여약관, 쏘카 차량손해면책제도 이용약관, 개인정보 수집 및 이용동의, 개인정보 제3자 제공 동의, 위치정보 이용약관"),),
         onExpansionChanged: (value) {
           setState(() {
             widget.isAllTermChecked = !value;
@@ -92,7 +92,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
         initiallyExpanded: true,
         
         children: [
-          Padding(padding: EdgeInsets.only(left: 10),
+          Padding(padding: const EdgeInsets.only(left: 10),
           child: Column(children: [const Divider(
             color: Color(0xffe9ebee),
             thickness: 1.5,

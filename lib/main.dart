@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:socar/reservation_payment_page.dart'; // 예약페이지
-import 'package:socar/complete_payment_page.dart'; // 결제 완료 페이지
-import 'package:socar/reservation_confirm_page.dart'; // 결제 확인 페이지
+import 'package:socar/screens/payment_page/reservation_payment_page.dart'; // 예약페이지
+import 'package:socar/screens/payment_page/complete_payment_page.dart'; // 결제 완료 페이지
+import 'package:socar/screens/smart_key_page/reservation_confirm_page.dart'; // 결제 확인 페이지
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:socar/screens/rent_map_page/rent_map_page.dart';
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           "/login": (context) => const LoginPage(),
           "/register/auth": (context) => RegisterAuthPage(),
           "/register/input": (context) => const RegisterInputPage(),
-          "/main": (context) => const MainPage(),
+          "/main": (context) => MainPage(),
           "/rent/map": (context) => const RentMapPage(),
           '/reservationPayment': (context) => Reservationpaymentpage(),
           '/reservationConfirm': (context) => const ReservationConfirm(),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:socar/constants/color.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/icon_row.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/text_styles.dart';
+import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 
 class PlaceWidget extends StatelessWidget {
   const PlaceWidget({Key? key}) : super(key: key);
@@ -16,16 +18,13 @@ class PlaceWidget extends StatelessWidget {
               color: ColorPalette.gray300,
               borderRadius: BorderRadius.circular(5),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            margin: EdgeInsets.all(10),
-            child: Text("지상"),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            margin: const EdgeInsets.all(10),
+            child: const Text("지상"),
           ),
           Text(
             "효성유료주차장",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
+            style: parkingNameStyle,
           ),
           Spacer(),
           GestureDetector(
@@ -42,27 +41,26 @@ class PlaceWidget extends StatelessWidget {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(Icons.exit_to_app),
+                          icon: const Icon(Icons.exit_to_app),
                         )
                       ]),
                       Row(
                         children: [
                           Container(
-                            margin: EdgeInsets.all(30),
+                            margin: const EdgeInsets.all(30),
                             child: Column(
                               children: [
                                 Text(
                                   "옥산유료주차장",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
+                                  style: parkingNameStyle,
                                 ),
-                                SizedBox(height: 15),
+                                const PaddingBox(
+                                  width: 15,
+                                  height: 0,
+                                ),
                                 Text(
                                   "인동서한이다음아파트 옆",
-                                  style: TextStyle(
-                                    color: ColorPalette.gray300,
-                                  ),
+                                  style: socarGray300Style,
                                 )
                               ],
                             ),
@@ -76,7 +74,7 @@ class PlaceWidget extends StatelessWidget {
                                   image: AssetImage('assets/images/park.jpg'),
                                   fit: BoxFit.cover),
                             ),
-                            child: SizedBox(
+                            child: const PaddingBox(
                               width: 80,
                               height: 80,
                             ),
@@ -95,12 +93,10 @@ class PlaceWidget extends StatelessWidget {
               );
             },
             child: Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               child: Text(
                 "자세히",
-                style: TextStyle(
-                  color: ColorPalette.gray500,
-                ),
+                style: socarGray500Style,
               ),
             ),
           )

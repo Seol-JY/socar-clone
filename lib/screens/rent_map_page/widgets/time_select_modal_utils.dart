@@ -1,25 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:socar/utils/CustomDateUtils.dart';
 
 class TimeSelectModalUtils {
-  static void showCustomModal(BuildContext context) {
+  static void showCustomModal(
+    BuildContext context,
+    DateTimeRange timeRange,
+    bool isChanged,
+    void Function(DateTimeRange newTimeRange) updateTimeRange,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return TimeSelectModal();
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return TimeSelectModal(
+              timeRange: timeRange,
+              isChanged: isChanged,
+              onTimeRangeSelected: updateTimeRange,
+            );
+          },
+        );
       },
     );
   }
 }
 
 class TimeSelectModal extends StatefulWidget {
+  final DateTimeRange timeRange;
+  final bool isChanged;
+  final Function(DateTimeRange) onTimeRangeSelected;
+
+  const TimeSelectModal({
+    Key? key,
+    required this.timeRange,
+    required this.isChanged,
+    required this.onTimeRangeSelected,
+  }) : super(key: key);
+
   @override
-  _TimeSelectModalState createState() => _TimeSelectModalState();
+  State<TimeSelectModal> createState() => _TimeSelectModalState();
 }
 
 class _TimeSelectModalState extends State<TimeSelectModal> {
+  late DateTimeRange _currentTimeRange;
+  late bool _currentIsChanged;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentTimeRange = widget.timeRange;
+    _currentIsChanged = widget.isChanged;
+  }
+
+  void setIsChanged() {
+    setState(() {
+      _currentIsChanged = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
@@ -59,7 +100,10 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "이용시간 설정하기",
+                      _currentIsChanged
+                          ? CustomDateUtils.dateTimeRangeFormatter(
+                              _currentTimeRange)
+                          : "이용시간 설정하기",
                       style: TextStyle(
                         color: ColorPalette.gray600,
                         fontWeight: FontWeight.w600,
@@ -70,7 +114,8 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                       height: 8,
                     ),
                     Text(
-                      "오늘 2:00 - 5:00",
+                      CustomDateUtils.doubleDateTimeFormatter(
+                          _currentTimeRange),
                       style: TextStyle(
                         color: ColorPalette.gray400,
                         fontWeight: FontWeight.w400,
@@ -83,7 +128,6 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                       thickness: 0.8,
                       color: ColorPalette.gray200,
                     ),
-                    // _buildExpansionTile(0, "대여 시각"),
                     ExpansionPanelList.radio(
                       elevation: 0,
                       dividerColor: ColorPalette.gray200,
@@ -103,41 +147,62 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                                     color: ColorPalette.gray500,
                                     fontWeight: FontWeight.w400),
                               ),
-                              trailing: Text("오늘 13:00"),
+                              trailing: Text(
+                                CustomDateUtils.singleDateTimeFormatter(
+                                  _currentTimeRange.start,
+                                ),
+                              ),
                             );
                           },
                           body: Container(
-                              child: Column(
-                            children: [
-                              Container(
-                                height: 200,
-                                child: CupertinoDatePicker(
-                                  onDateTimeChanged: (DateTime newdate) {
-                                    print(newdate);
-                                  },
-                                  minuteInterval: 10,
-                                  minimumDate: DateTime.now().add(
-                                    Duration(
-                                        minutes:
-                                            10 - DateTime.now().minute % 10),
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 200,
+                                  child: CupertinoDatePicker(
+                                    onDateTimeChanged: (DateTime newdate) {
+                                      setIsChanged();
+                                      if (newdate.isBefore(_currentTimeRange.end
+                                          .subtract(Duration(minutes: 30)))) {
+                                        setState(() {
+                                          _currentTimeRange = DateTimeRange(
+                                            start: newdate,
+                                            end: _currentTimeRange.end,
+                                          );
+                                        });
+                                      } else {
+                                        setState(() {
+                                          _currentTimeRange = DateTimeRange(
+                                            start: newdate,
+                                            end:
+                                                newdate.add(Duration(hours: 4)),
+                                          );
+                                        });
+                                      }
+
+                                      widget.onTimeRangeSelected(
+                                          _currentTimeRange);
+                                    },
+                                    minuteInterval: 10,
+                                    minimumDate: DateTime.now()
+                                        .add(Duration(minutes: 10))
+                                        .subtract(Duration(
+                                            minutes:
+                                                DateTime.now().minute % 10)),
+                                    initialDateTime: _currentTimeRange.start,
+                                    showDayOfWeek: true,
+                                    use24hFormat: true,
+                                    mode: CupertinoDatePickerMode.dateAndTime,
                                   ),
-                                  initialDateTime: DateTime.now().add(
-                                    Duration(
-                                        minutes:
-                                            10 - DateTime.now().minute % 10),
-                                  ),
-                                  showDayOfWeek: true,
-                                  use24hFormat: true,
-                                  mode: CupertinoDatePickerMode.dateAndTime,
                                 ),
-                              ),
-                              Divider(
-                                height: 14,
-                                thickness: 0.8,
-                                color: ColorPalette.gray200,
-                              ),
-                            ],
-                          )),
+                                Divider(
+                                  height: 14,
+                                  thickness: 0.8,
+                                  color: ColorPalette.gray200,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         ExpansionPanelRadio(
                           value: 1,
@@ -153,46 +218,50 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                                     color: ColorPalette.gray500,
                                     fontWeight: FontWeight.w400),
                               ),
-                              trailing: Text("오늘 13:00"),
+                              trailing: Text(
+                                CustomDateUtils.singleDateTimeFormatter(
+                                  _currentTimeRange.end,
+                                ),
+                              ),
                             );
                           },
                           body: Container(
-                              child: Column(
-                            children: [
-                              Container(
-                                height: 200,
-                                child: CupertinoDatePicker(
-                                  onDateTimeChanged: (DateTime newdate) {
-                                    print(newdate);
-                                  },
-                                  minuteInterval: 10,
-                                  minimumDate: DateTime.now().add(
-                                    Duration(
-                                        minutes:
-                                            10 - DateTime.now().minute % 10),
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 200,
+                                  child: CupertinoDatePicker(
+                                    onDateTimeChanged: (DateTime newdate) {
+                                      setIsChanged();
+                                      setState(() {
+                                        _currentTimeRange = DateTimeRange(
+                                          start: _currentTimeRange.start,
+                                          end: newdate,
+                                        );
+                                      });
+                                      widget.onTimeRangeSelected(
+                                          _currentTimeRange);
+                                    },
+                                    minuteInterval: 10,
+                                    minimumDate: _currentTimeRange.start
+                                        .add(Duration(minutes: 30)),
+                                    initialDateTime: _currentTimeRange.end,
+                                    showDayOfWeek: true,
+                                    use24hFormat: true,
+                                    mode: CupertinoDatePickerMode.dateAndTime,
                                   ),
-                                  initialDateTime: DateTime.now().add(
-                                    Duration(
-                                        minutes:
-                                            10 - DateTime.now().minute % 10),
-                                  ),
-                                  showDayOfWeek: true,
-                                  use24hFormat: true,
-                                  mode: CupertinoDatePickerMode.dateAndTime,
                                 ),
-                              ),
-                              Divider(
-                                height: 14,
-                                thickness: 0.8,
-                                color: ColorPalette.gray200,
-                              ),
-                            ],
-                          )),
+                                Divider(
+                                  height: 14,
+                                  thickness: 0.8,
+                                  color: ColorPalette.gray200,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-
-                    // _buildExpansionTile(1, "반납 시각"),
                   ],
                 ),
               ),

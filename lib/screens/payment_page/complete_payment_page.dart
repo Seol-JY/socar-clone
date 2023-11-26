@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:socar/reservation_confirm_page.dart';
+import 'package:socar/constants/colors.dart';
+import 'package:socar/screens/smart_key_page/reservation_confirm_page.dart';
 
 //Color(0xff00B8FF) 파랑
 //Color(0xff374553) 회
@@ -41,7 +42,6 @@ class CompletePayment extends StatelessWidget {
                 color: Colors.black,
                 icon: const Icon(Icons.clear_outlined)),
           ],
-          //appBar 그림자 농도 설정 (값 0으로 제거)
         ),
         body: Container(
           color: Colors.white,
@@ -49,17 +49,17 @@ class CompletePayment extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center, // 수직 방향으로 중앙 정렬
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(Icons.check_circle_sharp, color: Colors.blue, size: 100),
+              Icon(Icons.check_circle_sharp, color: ColorPalette.socarBlue, size: 100),
               SizedBox(height: 20),
               Text(
                 "예약을 완료했어요!",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
               Text(
                 "쏘카 카셰어링으로 둘어드는 탄소가 연간 39만 톤, \n 지구를 아끼는 여행에 함께해주셔서 고맙습니다.",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: ColorPalette.gray400, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 150),
@@ -69,7 +69,7 @@ class CompletePayment extends StatelessWidget {
         bottomNavigationBar: Container(
           margin: const EdgeInsets.only(bottom: 70),
           child: BottomAppBar(
-            color: Colors.white, // BottomAppBar의 배경색을 하얗게 설정
+            color: ColorPalette.white, // BottomAppBar의 배경색을 하얗게 설정
             elevation: 0.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -86,13 +86,13 @@ class CompletePayment extends StatelessWidget {
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                      side: BorderSide(color: ColorPalette.gray300),
                     ),
                   ),
                   child: const Text(
                     "내 예약 보기",
                     style: TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
+                        color: ColorPalette.gray400, fontWeight: FontWeight.w700),
                   ),
                 ),
                 TextButton(
@@ -102,13 +102,13 @@ class CompletePayment extends StatelessWidget {
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                      side: BorderSide(color: ColorPalette.gray300),
                     ),
                   ),
                   child: const Text(
                     "홈으로 가기",
                     style: TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
+                        color: ColorPalette.socarBlue, fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
