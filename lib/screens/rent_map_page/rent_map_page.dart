@@ -96,6 +96,8 @@ class _RentMapPageState extends State<RentMapPage>
       nMarker.setIcon(_getMarkerIcon(nMarker.info.id));
     }
 
+    focusMarkerPosition(markerId);
+
     if (_markerId != -1) {
       showModalBottomSheet<void>(
         context: context,
@@ -118,12 +120,12 @@ class _RentMapPageState extends State<RentMapPage>
             },
           );
         },
-      );
+      ).then((value) {
+        _setMarkerId("-1");
+      });
     } else {
       foldState = FoldState.None as int;
     }
-
-    focusMarkerPosition(markerId);
   }
 
   void _permission() async {
