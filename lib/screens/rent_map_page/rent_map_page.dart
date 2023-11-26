@@ -6,6 +6,9 @@ import 'package:socar/screens/rent_map_page/utils/LocationPermissionManager.dart
 import 'package:socar/widgets/nav_drawer.dart';
 import 'package:socar/screens/rent_map_page/widgets/rent_app_bar.dart';
 import 'package:socar/screens/rent_map_page/widgets/time_select_btn.dart';
+
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/animated_bottom_modalsheet.dart';
+
 import 'package:socar/constants/fold_state_enum.dart';
 
 class MarkerInfo {
@@ -22,9 +25,35 @@ class RentMapPage extends StatefulWidget {
   State<RentMapPage> createState() => _RentMapPageState();
 }
 
-class _RentMapPageState extends State<RentMapPage> {
+class _RentMapPageState extends State<RentMapPage>
+    with SingleTickerProviderStateMixin {
   NaverMapController? mapController;
   Set<NMarker> _nMarkers = {};
+
+  late AnimationController _animationController;
+  int foldState = FoldState.Fold.idx;
+
+  void fold(bool isFold) {
+    if (isFold) {
+      foldState -= 1;
+    }
+
+    if (foldState == FoldState.None.idx) {
+      foldState = FoldState.Fold.idx;
+      Navigator.pop(context);
+      _animationController.reverse();
+    }
+
+    if (!isFold) {
+      if (foldState < FoldState.Unfold.idx) {
+        foldState += 1;
+      }
+    }
+  }
+
+  int getFoldState() {
+    return foldState;
+  }
 
   late DateTimeRange timeRange = new DateTimeRange(
     start: DateTime.now()
@@ -63,6 +92,33 @@ class _RentMapPageState extends State<RentMapPage> {
 
     for (var nMarker in _nMarkers) {
       nMarker.setIcon(_getMarkerIcon(nMarker.info.id));
+    }
+
+    if (_markerId != -1) {
+      showModalBottomSheet<void>(
+        context: context,
+        useSafeArea: true,
+        isScrollControlled: true,
+        enableDrag: false,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter sheetState) {
+              double screenHeight = MediaQuery.of(context).size.height;
+              double halfScreenHeight = screenHeight / 2;
+
+              return AnimatedBottomModalSheet(
+                sheetState: sheetState,
+                fold: fold,
+                getFoldState: getFoldState,
+                screenHeight: screenHeight,
+                halfScreenHeight: halfScreenHeight,
+              );
+            },
+          );
+        },
+      );
+    } else {
+      foldState = FoldState.None as int;
     }
 
     focusMarkerPosition(markerId);
@@ -109,6 +165,11 @@ class _RentMapPageState extends State<RentMapPage> {
   @override
   void initState() {
     super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
 
     _nMarkers = _initMarker();
     _permission();

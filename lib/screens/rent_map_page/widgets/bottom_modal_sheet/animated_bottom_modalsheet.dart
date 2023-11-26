@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/place_widget.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/car_list_view.dart';
 import 'package:socar/constants/color.dart';
+import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/swipe_bar.dart';
 
 import '../../../../constants/fold_state_enum.dart';
 
@@ -29,7 +31,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
 
     return AnimatedContainer(
       curve: Curves.easeInBack,
-      duration: Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 600),
       height: foldState == FoldState.Fold.idx ? halfScreenHeight : screenHeight,
       color: ColorPalette.white,
       child: Column(
@@ -51,23 +53,11 @@ class AnimatedBottomModalSheet extends StatelessWidget {
             },
             child: Container(
               margin: const EdgeInsets.all(10),
-              child: Column(
+              child: const Column(
                 children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      color: ColorPalette.gray500,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 10,
-                      alignment: Alignment.topCenter,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  PaddingBox(),
+                  Swipebar(),
+                  PaddingBox(),
                 ],
               ),
             ),
