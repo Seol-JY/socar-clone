@@ -55,6 +55,24 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
       fontSize: 18,
     );
 
+    BoxDecoration authSendButtonStyle = const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          left: BorderSide(
+            color: Color(0xffe9ebee),
+          ),
+          right: BorderSide(
+            color: Color(0xffe9ebee),
+          ),
+          bottom: BorderSide(
+            color: Color(0xffe9ebee),
+          ),
+        ));
+
+    TextStyle authCodeSendButtonStyle = TextStyle(
+      color: isReadyToSendVerifyCode() ? const Color(0xff02b8ff) : Colors.grey,
+    );
+
     TextStyle bottomButtonTextStyle = TextStyle(
       fontWeight: FontWeight.bold,
       color: isAuthCodeEntered() ? Colors.white : const Color(0xffc5c8ce),
@@ -62,6 +80,8 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
 
     Color bottomButtonColor =
         isAuthCodeEntered() ? const Color(0xff00b8ff) : const Color(0xffe9ebee);
+
+    TextStyle bottonInfoTextStyle = const TextStyle(color: Color(0xff646f7c));
 
     // lambda Function 정의
     setForeignDropdownValue(value) {
@@ -137,19 +157,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                   textController: phoneNumberController,
                 ),
                 Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        left: BorderSide(
-                          color: Color(0xffe9ebee),
-                        ),
-                        right: BorderSide(
-                          color: Color(0xffe9ebee),
-                        ),
-                        bottom: BorderSide(
-                          color: Color(0xffe9ebee),
-                        ),
-                      )),
+                  decoration: authSendButtonStyle,
                   child: Row(
                     children: [
                       Expanded(
@@ -157,11 +165,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                           onPressed: sendVerifyCode,
                           child: Text(
                             isAuthCodeSended ? "재전송" : "인증 번호 발송",
-                            style: TextStyle(
-                              color: isReadyToSendVerifyCode()
-                                  ? const Color(0xff02b8ff)
-                                  : Colors.grey,
-                            ),
+                            style: authCodeSendButtonStyle,
                           ),
                         ),
                       ),
@@ -178,13 +182,15 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
+                Text(
                   "· 본인 명의 휴대폰 번호만 인증이 가능합니다.",
-                  style: TextStyle(color: Color(0xff646f7c)),
+                  style: bottonInfoTextStyle,
                 ),
                 const SizedBox(height: 5),
-                const Text("· 휴대폰 본인인증은 나이스평가정보(주)에서 제공하는 서비스입니다.",
-                    style: TextStyle(color: Color(0xff646f7c)))
+                Text(
+                  "· 휴대폰 본인인증은 나이스평가정보(주)에서 제공하는 서비스입니다.",
+                  style: bottonInfoTextStyle,
+                )
               ],
             )),
       ),

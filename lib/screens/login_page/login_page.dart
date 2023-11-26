@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socar/services/user_auth_service.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/utils/user_input_validator.dart';
 
@@ -15,14 +16,12 @@ class LoginState extends State<LoginPage> {
   final TextEditingController _idController = TextEditingController();
 
   final TextEditingController _pwController = TextEditingController();
-
-  final UserInputValidator _inputValidator = UserInputValidator();
-
+  final UserAuthenticateService authenticateService = UserAuthenticateService();
   bool isEnabled() {
     final String email = _idController.text;
     final String password = _pwController.text;
-    return _inputValidator.validEmailFormat(email) &&
-        _inputValidator.validPasswordFormat(password);
+    return UserInputValidator.validEmailFormat(email) &&
+        UserInputValidator.validPasswordFormat(password);
   }
 
   @override
@@ -37,7 +36,9 @@ class LoginState extends State<LoginPage> {
   }
 
   void doAuthenticate() {
-    // TODO : 로그인 검증 필요
+    if (!authenticateService.doLogin()) {
+      return;
+    }
     Navigator.pushNamed(context, '/main');
   }
 

@@ -4,4 +4,12 @@ class UserAuthenticateService {
   bool isAuthenticateSucceed() {
     return true;
   }
+
+  bool doRegister() {
+    return true;
+  }
+
+  bool doLogin() {
+    return true;
+  }
 }
