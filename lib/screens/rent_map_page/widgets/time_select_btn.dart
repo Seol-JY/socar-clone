@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
-import 'package:socar/screens/rent_map_page/utils/CustomDateUtils.dart';
+import 'package:socar/utils/CustomDateUtils.dart';
 import 'package:socar/screens/rent_map_page/widgets/time_select_modal_utils.dart';
 
 class TimeSelectBtn extends StatefulWidget {
@@ -51,12 +51,14 @@ class _TimeSelectBtnState extends State<TimeSelectBtn> {
                         child: Icon(
                           Icons.access_time_outlined,
                           size: 19,
-                          color: ColorPalette.socarBlue,
+                          color: widget.isChanged
+                              ? ColorPalette.gray400
+                              : ColorPalette.socarBlue,
                         ),
                       ),
                       TextSpan(
                           text:
-                              " ${widget.isChanged ? CustomDateUtils.dateTimeRangeFormatter(widget.timeRange) : "이용시간 설정하기"}",
+                              " ${widget.isChanged ? CustomDateUtils.dateTimeRangeFormatter(widget.timeRange) : "이용시간 설정하기"}  ",
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -65,14 +67,16 @@ class _TimeSelectBtnState extends State<TimeSelectBtn> {
                     ],
                   ),
                 ),
-                Text(
-                  CustomDateUtils.doubleDateTimeFormatter(widget.timeRange),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: ColorPalette.gray300,
+                Expanded(
+                  child: Text(
+                    CustomDateUtils.doubleDateTimeFormatter(widget.timeRange),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: ColorPalette.gray300,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.clip,
                 ),
               ],
             ),

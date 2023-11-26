@@ -71,6 +71,8 @@ class _RentMapPageState extends State<RentMapPage>
   void updateTimeRange(DateTimeRange newTimeRange) {
     setState(() {
       timeRange = newTimeRange;
+    });
+    setState(() {
       isChanged = true;
     });
   }
