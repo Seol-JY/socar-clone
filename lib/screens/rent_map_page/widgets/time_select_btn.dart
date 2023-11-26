@@ -68,14 +68,17 @@ class _TimeSelectBtnState extends State<TimeSelectBtn> {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    CustomDateUtils.doubleDateTimeFormatter(widget.timeRange),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: ColorPalette.gray300,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      CustomDateUtils.doubleDateTimeFormatter(widget.timeRange),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: ColorPalette.gray300,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
