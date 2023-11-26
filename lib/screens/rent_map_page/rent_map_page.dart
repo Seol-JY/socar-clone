@@ -26,6 +26,26 @@ class _RentMapPageState extends State<RentMapPage> {
   NaverMapController? mapController;
   Set<NMarker> _nMarkers = {};
 
+  late DateTimeRange timeRange = new DateTimeRange(
+    start: DateTime.now()
+        .add(Duration(minutes: 20))
+        .subtract(Duration(minutes: DateTime.now().minute % 10)),
+    end: DateTime.now()
+        .add(Duration(minutes: 20))
+        .subtract(Duration(minutes: DateTime.now().minute % 10))
+        .add(Duration(hours: 4)),
+  );
+
+  // 시간이 초깃값과 다른지 확인하기 위한 용도
+  bool isChanged = false;
+
+  void updateTimeRange(DateTimeRange newTimeRange) {
+    setState(() {
+      timeRange = newTimeRange;
+      isChanged = true;
+    });
+  }
+
   // 마커 정보 리스트
   List<MarkerInfo> markers = [
     MarkerInfo(id: '1', position: const NLatLng(36.138909, 128.397019)),
@@ -153,7 +173,7 @@ class _RentMapPageState extends State<RentMapPage> {
               top: (_markerId != -1) ? 0 : null,
               left: 0,
               right: 0,
-              child: const TimeSelectBtn(),
+              child: TimeSelectBtn(timeRange, isChanged, updateTimeRange),
             )
           ],
         ),
