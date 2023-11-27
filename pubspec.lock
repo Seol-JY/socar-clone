@@ -137,8 +137,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-<<<<<<< HEAD
-=======
   firebase_auth:
     dependency: "direct main"
     description:
@@ -163,7 +161,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.8.8"
->>>>>>> 755704ae2b4e0eca92987ee0f47b355f4c40dc22
   firebase_core:
     dependency: "direct main"
     description:
@@ -188,33 +185,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.8.1"
-<<<<<<< HEAD
-  firebase_database:
-    dependency: "direct main"
-    description:
-      name: firebase_database
-      sha256: "36665b7ddfcd8595b411df389ad3e92faf540ab064cb92fc9507af6f33e479f1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "10.3.5"
-  firebase_database_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_database_platform_interface
-      sha256: "952189768cf5695400f7ff6c734827646fd695bae29c39fa8304c2b5f9634a4e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.5+13"
-  firebase_database_web:
-    dependency: transitive
-    description:
-      name: firebase_database_web
-      sha256: "02207ef3e2adf2c3b6d3673805c2de6a3cee7b0cbbc7b5d6b98023d543090dc4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.3+13"
-=======
->>>>>>> 755704ae2b4e0eca92987ee0f47b355f4c40dc22
   firebase_storage:
     dependency: "direct main"
     description:
@@ -340,11 +310,7 @@ packages:
     source: hosted
     version: "0.15.4"
   http:
-<<<<<<< HEAD
-    dependency: transitive
-=======
     dependency: "direct main"
->>>>>>> 755704ae2b4e0eca92987ee0f47b355f4c40dc22
     description:
       name: http
       sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
