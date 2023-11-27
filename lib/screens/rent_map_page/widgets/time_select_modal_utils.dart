@@ -184,12 +184,9 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                                           _currentTimeRange);
                                     },
                                     minuteInterval: 10,
-                                    minimumDate: DateTime.now()
-                                        .add(Duration(minutes: 10))
-                                        .subtract(Duration(
-                                            minutes:
-                                                DateTime.now().minute % 10)),
-                                    initialDateTime: _currentTimeRange.start,
+                                    minimumDate: _currentTimeRange.start,
+                                    initialDateTime: _currentTimeRange.start
+                                        .add(Duration(microseconds: 1)),
                                     showDayOfWeek: true,
                                     use24hFormat: true,
                                     mode: CupertinoDatePickerMode.dateAndTime,

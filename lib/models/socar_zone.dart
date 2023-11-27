@@ -28,7 +28,6 @@ class SocarZone {
   factory SocarZone.fromFirestore(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     GeoPoint geoPoint = data['coord'] ?? const GeoPoint(0.0, 0.0);
-    print("$data");
     return SocarZone(
       id: document.id, // 추가: 문서의 아이디를 저장
       coord: NLatLng(geoPoint.latitude,
