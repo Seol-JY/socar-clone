@@ -1,49 +1,51 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserAuthenticateService {
+  bool authOk = false;
+  static String? verificationId;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> sendVerifyCode() async {
+  Future<void> sendVerifyCode(String phoneNumber) async {
     await _auth.verifyPhoneNumber(
-      timeout: const Duration(seconds: 60),
+      timeout: const Duration(seconds: 120),
       codeAutoRetrievalTimeout: (String verificationId) {
         // Auto-resolution timed out...
       },
-      phoneNumber: "+8210" +
-          phoneNumberController1.text.trim() +
-          phoneNumberController2.text.trim(),
-      verificationCompleted: (phoneAuthCredential) async {
-        print("otp 문자옴");
-      },
-      verificationFailed: (verificationFailed) async {
-        print(verificationFailed.code);
-
-        print("코드발송실패");
-        setState(() {
-          showLoading = false;
-        });
-      },
+      phoneNumber: "+82$phoneNumber",
+      verificationCompleted: (phoneAuthCredential) async {},
+      verificationFailed: (verificationFailed) async {},
       codeSent: (verificationId, resendingToken) async {
-        print("코드보냄");
-        Fluttertoast.showToast(
-            msg:
-                "010-${phoneNumberController1.text}-${phoneNumberController2.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.",
-            toastLength: Toast.LENGTH_SHORT,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green,
-            fontSize: 12.0);
-        setState(() {
-          requestedAuth = true;
-          FocusScope.of(context).requestFocus(otpFocusNode);
-          showLoading = false;
-          this.verificationId = verificationId;
-        });
+        UserAuthenticateService.verificationId = verificationId;
       },
     );
   }
 
-  bool isAuthenticateSucceed() {
-    return true;
+  Future<void> isAuthenticateSucceed(String code) async {
+    PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
+        verificationId: UserAuthenticateService.verificationId!, smsCode: code);
+    try {
+      await _signInWithPhoneAuthCredential(phoneAuthCredential);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _signInWithPhoneAuthCredential(
+      PhoneAuthCredential phoneAuthCredential) async {
+    try {
+      final authCredential =
+          await _auth.signInWithCredential(phoneAuthCredential);
+
+      if (authCredential.user == null) {
+        throw Exception("인증 코드가 잘못되었거나 만료되었습니다.");
+      }
+
+      // 휴대폰 전화번호로 로그인 된거 로그아웃 및 유저 제거
+      await _auth.currentUser!.delete();
+      _auth.signOut();
+    } on FirebaseAuthException {
+      throw Exception("인증 코드가 잘못되었거나 만료되었습니다.");
+    }
   }
 
   Future<bool> doRegister(String emailAddress, String password) async {
