@@ -23,11 +23,12 @@ dependencies:
   permission_handler: ^11.0.1
   geolocator: ^10.1.0
   intl: ^0.18.1
-  firebase_database: ^10.3.5
+  firebase_auth: ^4.14.1
   firebase_core: ^2.23.0
-  firebase_storage: ^11.5.2
   cloud_firestore: ^4.13.2
+  firebase_storage: ^11.5.2
   url_launcher: ^6.2.1
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

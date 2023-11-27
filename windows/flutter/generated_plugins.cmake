@@ -3,9 +3,14 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+<<<<<<< HEAD
   cloud_firestore
   firebase_core
   firebase_storage
+=======
+  firebase_auth
+  firebase_core
+>>>>>>> 755704ae2b4e0eca92987ee0f47b355f4c40dc22
   geolocator_windows
   permission_handler_windows
   url_launcher_windows

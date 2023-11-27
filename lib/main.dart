@@ -1,4 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
+
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:socar/firebase_options.dart';
 import 'package:socar/screens/payment_page/reservation_payment_page.dart'; // 예약페이지
@@ -14,11 +16,15 @@ import 'screens/register_auth_page/register_auth_page.dart';
 import 'screens/register_input_page/register_input_page.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NaverMapSdk.instance.initialize(clientId: 'r3hfqo684f');
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,  
   );
   runApp(MyApp());
 }
