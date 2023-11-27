@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "821029638582",
+    "project_id": "socar-opensorce-team9",
+    "storage_bucket": "socar-opensorce-team9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821029638582:android:4a6bcd8299767b6b74f117",
+        "android_client_info": {
+          "package_name": "com.example.socar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi4CSfnVXbITrComrQ3vM2t8pMm_WePgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
