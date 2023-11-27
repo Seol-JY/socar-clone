@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:socar/constants/colors.dart';
+import 'package:socar/models/socar_zone.dart';
 import 'package:socar/screens/rent_map_page/utils/LocationPermissionManager.dart';
 import 'package:socar/widgets/nav_drawer.dart';
 import 'package:socar/screens/rent_map_page/widgets/rent_app_bar.dart';
@@ -10,13 +12,6 @@ import 'package:socar/screens/rent_map_page/widgets/time_select_btn.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/animated_bottom_modalsheet.dart';
 
 import 'package:socar/constants/fold_state_enum.dart';
-
-class MarkerInfo {
-  final String id;
-  final NLatLng position;
-
-  MarkerInfo({required this.id, required this.position});
-}
 
 class RentMapPage extends StatefulWidget {
   const RentMapPage({super.key});
@@ -78,27 +73,23 @@ class _RentMapPageState extends State<RentMapPage>
   }
 
   // 마커 정보 리스트
-  List<MarkerInfo> markers = [
-    MarkerInfo(id: '1', position: const NLatLng(36.138909, 128.397019)),
-    MarkerInfo(id: '2', position: const NLatLng(37.138909, 128.397019)),
-    MarkerInfo(id: '3', position: const NLatLng(36.144176, 128.392375)),
-    // Add more markers as needed
-  ];
+  late List<SocarZone> socarZones = [];
 
   // 마커 선택 관리
-  int _markerId = -1;
+  String _markerId = "";
   void _setMarkerId(String markerId) {
     setState(() {
-      _markerId = int.parse(markerId);
+      _markerId = markerId;
     });
 
     for (var nMarker in _nMarkers) {
+      print(nMarker);
       nMarker.setIcon(_getMarkerIcon(nMarker.info.id));
     }
 
     focusMarkerPosition(markerId);
 
-    if (_markerId != -1) {
+    if (_markerId != "") {
       showModalBottomSheet<void>(
         context: context,
         useSafeArea: true,
@@ -121,7 +112,7 @@ class _RentMapPageState extends State<RentMapPage>
           );
         },
       ).then((value) {
-        _setMarkerId("-1");
+        _setMarkerId("");
       });
     } else {
       foldState = FoldState.None as int;
@@ -136,7 +127,7 @@ class _RentMapPageState extends State<RentMapPage>
   Set<NMarker> _initMarker() {
     Set<NMarker> nMarkers = {};
 
-    for (var markerInfo in markers) {
+    for (var markerInfo in socarZones) {
       final marker = _createMarker(markerInfo);
       nMarkers.add(marker);
     }
@@ -144,11 +135,11 @@ class _RentMapPageState extends State<RentMapPage>
     return nMarkers;
   }
 
-  NMarker _createMarker(MarkerInfo markerInfo) {
+  NMarker _createMarker(SocarZone socarZone) {
     final marker = NMarker(
-      id: markerInfo.id,
-      position: markerInfo.position,
-      icon: _getMarkerIcon(markerInfo.id),
+      id: socarZone.id,
+      position: socarZone.coord,
+      icon: _getMarkerIcon(socarZone.id),
     );
 
     marker.setOnTapListener((NMarker marker) {
@@ -160,7 +151,7 @@ class _RentMapPageState extends State<RentMapPage>
 
   NOverlayImage _getMarkerIcon(String markerId) {
     return NOverlayImage.fromAssetImage(
-      _markerId == int.parse(markerId)
+      _markerId == markerId
           ? "assets/images/pinzoneEnabled.png"
           : "assets/images/pinzoneDisabled.png",
     );
@@ -174,9 +165,23 @@ class _RentMapPageState extends State<RentMapPage>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-
-    _nMarkers = _initMarker();
     _permission();
+  }
+
+  Future<List<SocarZone>> _getSocarZones() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    CollectionReference collectionRef = db.collection("socar_zone");
+
+    try {
+      QuerySnapshot querySnapshot = await collectionRef.get();
+      List<DocumentSnapshot> documents = querySnapshot.docs;
+      return documents.map((document) {
+        return SocarZone.fromFirestore(document);
+      }).toList();
+    } catch (e) {
+      print("Error getting documents: $e");
+      rethrow;
+    }
   }
 
   @override
@@ -220,13 +225,18 @@ class _RentMapPageState extends State<RentMapPage>
               ),
               onMapTapped: (NPoint point, NLatLng latLng) {
                 // 맵 클릭 시 상태 초기화
-                _setMarkerId("-1");
+                _setMarkerId("");
               },
               onMapReady: (controller) async {
+                _getSocarZones().then((data) => setState(() {
+                      socarZones = data;
+                      _nMarkers = _initMarker();
+                      // 지도에 마커 렌더링
+                      mapController?.addOverlayAll(_nMarkers);
+                    }));
+
                 // 지도 컨트롤러 설정
                 mapController = controller;
-                // 지도에 마커 렌더링
-                mapController?.addOverlayAll(_nMarkers);
                 mapController
                     ?.setLocationTrackingMode(NLocationTrackingMode.noFollow);
                 // 현재 위치로 이동 (위치 권한 확인)
@@ -234,8 +244,8 @@ class _RentMapPageState extends State<RentMapPage>
               },
             ),
             Positioned(
-              bottom: (_markerId != -1) ? null : 0,
-              top: (_markerId != -1) ? 0 : null,
+              bottom: (_markerId != "") ? null : 0,
+              top: (_markerId != "") ? 0 : null,
               left: 0,
               right: 0,
               child: TimeSelectBtn(timeRange, isChanged, updateTimeRange),
@@ -263,7 +273,7 @@ class _RentMapPageState extends State<RentMapPage>
     for (var nMarker in _nMarkers) {
       if (nMarker.info.id == markerId) {
         NCameraUpdate nCameraUpdate =
-            NCameraUpdate.withParams(zoom: 16, target: nMarker.position);
+            NCameraUpdate.withParams(zoom: 15, target: nMarker.position);
 
         nCameraUpdate.setPivot(const NPoint(1 / 2, 1 / 3));
         mapController?.updateCamera(nCameraUpdate);
