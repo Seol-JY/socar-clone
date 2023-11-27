@@ -1,5 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:socar/firebase_options.dart';
 import 'package:socar/screens/payment_page/reservation_payment_page.dart'; // 예약페이지
 import 'package:socar/screens/payment_page/complete_payment_page.dart'; // 결제 완료 페이지
 import 'package:socar/screens/smart_key_page/reservation_confirm_page.dart'; // 결제 확인 페이지
@@ -11,14 +12,15 @@ import 'screens/login_register_page/login_register_page.dart';
 import 'screens/login_page/login_page.dart';
 import 'screens/register_auth_page/register_auth_page.dart';
 import 'screens/register_input_page/register_input_page.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NaverMapSdk.instance.initialize(clientId: 'r3hfqo684f');
-  runApp(
-    ChangeNotifierProvider(
-        create: (context) => PriceInfo(), child: const MyApp()),
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
