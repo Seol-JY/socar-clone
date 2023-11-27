@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:socar/screens/rent_map_page/utils/CustomDateUtils.dart';
+import 'package:socar/utils/CustomDateUtils.dart';
 
 class TimeSelectModalUtils {
   static void showCustomModal(
@@ -41,7 +41,7 @@ class TimeSelectModal extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TimeSelectModalState createState() => _TimeSelectModalState();
+  State<TimeSelectModal> createState() => _TimeSelectModalState();
 }
 
 class _TimeSelectModalState extends State<TimeSelectModal> {
@@ -53,6 +53,12 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
     super.initState();
     _currentTimeRange = widget.timeRange;
     _currentIsChanged = widget.isChanged;
+  }
+
+  void setIsChanged() {
+    setState(() {
+      _currentIsChanged = true;
+    });
   }
 
   @override
@@ -155,6 +161,7 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                                   height: 200,
                                   child: CupertinoDatePicker(
                                     onDateTimeChanged: (DateTime newdate) {
+                                      setIsChanged();
                                       if (newdate.isBefore(_currentTimeRange.end
                                           .subtract(Duration(minutes: 30)))) {
                                         setState(() {
@@ -225,6 +232,7 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                                   height: 200,
                                   child: CupertinoDatePicker(
                                     onDateTimeChanged: (DateTime newdate) {
+                                      setIsChanged();
                                       setState(() {
                                         _currentTimeRange = DateTimeRange(
                                           start: _currentTimeRange.start,

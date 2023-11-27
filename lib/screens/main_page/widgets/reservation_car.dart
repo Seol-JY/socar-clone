@@ -2,9 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
+import 'package:socar/screens/main_page/main_page.dart';
+import 'package:socar/utils/CustomDateUtils.dart';
 
 class ReservationCar extends StatelessWidget {
-  const ReservationCar({super.key});
+  final ReservationData reservationData;
+
+  const ReservationCar({
+    Key? key,
+    required this.reservationData,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +21,8 @@ class ReservationCar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             color: ColorPalette.white,
-            border:
-                Border.all(color: const Color.fromARGB(255, 230, 230, 230), width: 1),
+            border: Border.all(
+                color: const Color.fromARGB(255, 230, 230, 230), width: 1),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(25),
               topRight: Radius.circular(25),
@@ -27,10 +34,10 @@ class ReservationCar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Row(
+            Row(
               children: [
                 Text(
-                  "곽지호 님의 예약 ",
+                  "${reservationData.userName} 님의 예약 ",
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -54,21 +61,21 @@ class ReservationCar extends StatelessWidget {
                 children: [
                   Flexible(
                     flex: 1,
-                    child: Image.asset(
-                      "assets/CAR_EXAMPLE.png",
+                    child: Image.network(
+                      reservationData.carImageURL,
                       width: 90,
                     ),
                   ),
                   const SizedBox(
                     width: 10,
                   ),
-                  const Expanded(
+                  Expanded(
                       flex: 2,
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("149허6166",
+                            Text(reservationData.carNumber,
                                 style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
@@ -76,7 +83,8 @@ class ReservationCar extends StatelessWidget {
                             SizedBox(
                               height: 2,
                             ),
-                            Text("~ 오늘 23:30",
+                            Text(
+                                "~ ${CustomDateUtils.singleDateTimeFormatter(reservationData.reservationEndTime)}",
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -84,7 +92,7 @@ class ReservationCar extends StatelessWidget {
                             SizedBox(
                               height: 4,
                             ),
-                            Text("아울렛주차장",
+                            Text(reservationData.parkingLocation,
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
