@@ -9,8 +9,6 @@ class UserInputValidator {
     if (!validEmail) {
       return false;
     }
-    // TODO: 이메일 중복 체크 로직 필요
-
     return true;
   }
 

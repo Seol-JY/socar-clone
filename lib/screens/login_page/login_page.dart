@@ -13,12 +13,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginState extends State<LoginPage> {
-  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _pwController = TextEditingController();
   final UserAuthenticateService authenticateService = UserAuthenticateService();
   bool isEnabled() {
-    final String email = _idController.text;
+    final String email = _emailController.text;
     final String password = _pwController.text;
     return UserInputValidator.validEmailFormat(email) &&
         UserInputValidator.validPasswordFormat(password);
@@ -27,7 +27,7 @@ class LoginState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _idController.addListener(() {
+    _emailController.addListener(() {
       setState(() {});
     });
     _pwController.addListener(() {
@@ -36,10 +36,9 @@ class LoginState extends State<LoginPage> {
   }
 
   void doAuthenticate() {
-    if (!authenticateService.doLogin()) {
-      return;
-    }
-    Navigator.pushNamed(context, '/main');
+    authenticateService
+        .doLogin(_emailController.text, _pwController.text)
+        .then((value) => {Navigator.pushNamed(context, '/main')});
   }
 
   @override
@@ -121,7 +120,7 @@ class LoginState extends State<LoginPage> {
               height: 30,
             ),
             TextField(
-              controller: _idController,
+              controller: _emailController,
               decoration: idInputField,
             ),
             const SizedBox(
