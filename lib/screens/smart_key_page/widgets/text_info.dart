@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
+
 
 Widget buildCarImage() {
     return Image.network(
@@ -78,7 +82,9 @@ Widget buildCarImage() {
     );
   }
 
-  Widget buildInfoRow(String title1, String title2) {
+
+  Widget buildInfoRow(String title1, String title2, String url) {
+    print(url);
     return Container(
       decoration: BoxDecoration(
         color: ColorPalette.gray500,
@@ -92,11 +98,18 @@ Widget buildCarImage() {
         children: [
           Text(title1, style: TextStyle(color: ColorPalette.gray200)),
           Text("         $title2", style: TextStyle(color: ColorPalette.gray200)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.navigate_next_outlined), color: ColorPalette.white),
+          IconButton(
+            onPressed: () async{
+              launchUrl(Uri.parse(url));
+              },
+            icon: Icon(Icons.navigate_next_outlined), 
+            color: ColorPalette.white),
         ],
       ),
     );
-  }
+  
+}
+
 
   Widget buildRentTimeInfo() {
     return Container(
