@@ -91,6 +91,7 @@ class _RentMapPageState extends State<RentMapPage>
 
     if (_markerId != "") {
       showModalBottomSheet<void>(
+        barrierColor: Color.fromARGB(8, 0, 0, 0),
         context: context,
         useSafeArea: true,
         isScrollControlled: true,
