@@ -114,11 +114,9 @@ class _RegisterInputState extends State<RegisterInputPage> {
             if (!isReadyToRegister()) {
               return;
             }
-            bool registerSuccess = authenticateService.doRegister();
-
-            if (registerSuccess) {
-              showSuccessModal();
-            }
+            authenticateService
+                .doRegister(_emailController.text, _pwController.text)
+                .then((value) => showSuccessModal());
           },
           child: SizedBox(
             height: kToolbarHeight,
