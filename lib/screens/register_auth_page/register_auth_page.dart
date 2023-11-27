@@ -31,6 +31,8 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
   TermAgreementBoxWidget termAgreementBoxWidget = TermAgreementBoxWidget();
   late TimerUtil timerUtil;
 
+  UserAuthenticateService userAuthenticateService = UserAuthenticateService();
+
   @override
   void initState() {
     super.initState();
@@ -198,14 +200,16 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
         color: bottomButtonColor,
         child: InkWell(
           onTap: () {
-            if (!isAuthCodeEntered() ||
-                !widget.userAuthService.isAuthenticateSucceed()) {
+            if (!isAuthCodeEntered()) {
               return;
             }
 
-            Navigator.pushNamed(context, "/register/input",
-                arguments:
-                    InputPageArguments(username: usernameController.text));
+            widget.userAuthService
+                .isAuthenticateSucceed(authCodeController.text)
+                .then((value) => Navigator.pushNamed(context, "/register/input",
+                    arguments:
+                        InputPageArguments(username: usernameController.text)))
+                .catchError((e) => {print(e)});
           },
           child: SizedBox(
             height: kToolbarHeight,
@@ -240,6 +244,8 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     }
     setState(() {
       isAuthCodeSended = true;
+      userAuthenticateService
+          .sendVerifyCode(phoneNumberController.text.substring(1));
       timerUtil.runTimer();
     });
   }

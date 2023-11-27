@@ -65,10 +65,19 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDfEMhQzcYzsLhawPT7duq1drZSsdxId0A',
-    appId: '1:821029638582:ios:7f254e8819ceae5d74f117',
+    appId: '1:821029638582:ios:36ca0f3c897b8c1574f117',
     messagingSenderId: '821029638582',
     projectId: 'socar-opensorce-team9',
     storageBucket: 'socar-opensorce-team9.appspot.com',
-    iosBundleId: 'com.example.app',
+    iosBundleId: 'socar',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDfEMhQzcYzsLhawPT7duq1drZSsdxId0A',
+    appId: '1:821029638582:ios:36ca0f3c897b8c1574f117',
+    messagingSenderId: '821029638582',
+    projectId: 'socar-opensorce-team9',
+    storageBucket: 'socar-opensorce-team9.appspot.com',
+    iosBundleId: 'socar',
   );
 }

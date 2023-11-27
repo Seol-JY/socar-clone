@@ -207,6 +207,9 @@ class _RegisterInputState extends State<RegisterInputPage> {
                   child: Center(
                     child: TextButton(
                       onPressed: () {
+                        // 회원가입과 동시에 로그인 수행
+                        authenticateService.doLogin(
+                            _emailController.text, _pwController.text);
                         Navigator.pushNamed(context, "/main");
                       },
                       child: Text(

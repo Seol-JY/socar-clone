@@ -14,7 +14,7 @@ import 'screens/login_register_page/login_register_page.dart';
 import 'screens/login_page/login_page.dart';
 import 'screens/register_auth_page/register_auth_page.dart';
 import 'screens/register_input_page/register_input_page.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
