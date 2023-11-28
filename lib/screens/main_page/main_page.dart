@@ -37,7 +37,7 @@ class _MainPageState extends State<MainPage> {
     Future.delayed(Duration(seconds: 3), () {
       setState(() {
         reservationData = ReservationData(
-          userName: "곽지호",
+          userName: "예약 구현 필요",
           carImageURL: "https://example.com/car_image.jpg",
           carNumber: "149허6166",
           reservationEndTime: DateTime(2023, 11, 26, 23, 10),

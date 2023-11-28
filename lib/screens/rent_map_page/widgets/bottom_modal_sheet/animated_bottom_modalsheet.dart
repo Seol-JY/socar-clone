@@ -77,7 +77,6 @@ class AnimatedBottomModalSheet extends StatelessWidget {
                 return Text('에러: ${snapshot.error}');
               } else {
                 List<CarData> carDataList = snapshot.data ?? [];
-                print(carDataList);
                 return CarListView(carList: carDataList);
               }
             },
