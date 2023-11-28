@@ -12,6 +12,7 @@ import 'package:socar/screens/payment_page/utils/text_style.dart';
 import 'package:socar/screens/payment_page/widgets/insuar_radio.dart';
 import 'package:socar/screens/payment_page/widgets/term_agreement.dart';
 import 'package:socar/screens/payment_page/widgets/text_info.dart';
+import 'package:socar/services/sms_send.dart';
 import 'utils/time_check.dart';
 
 
@@ -175,6 +176,7 @@ class _BottompaybarState extends State<Bottompaybar> {
     return TextButton(
             onPressed: isButtonActive ? () {
               Navigator.pushNamed(context, '/completePayment');
+              SMSsend("차량예약이 완료되었습니다.");
             } : null, 
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
