@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:socar/screens/payment_page/reservation_payment_page.dart';
 
 
-
-// ignore: must_be_immutable
 class TermAgreementBoxWidget extends StatefulWidget {
+  final Function(bool? ) onData;
   bool isAllTermChecked = false;
   
-  TermAgreementBoxWidget({super.key});
+  TermAgreementBoxWidget({Key? key, required this.onData}) : super(key: key);
   
   @override
   State<StatefulWidget> createState() {
@@ -21,6 +18,14 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   final ExpansionTileController _controller = ExpansionTileController();
   
   late List<_TermAgreementWidget> terms;
+
+  bool checkbutton = false;
+  void changeValue(value){
+    if (value != null){
+      widget.onData(value);
+    }
+    
+  }
 
   @override
   void initState() {
@@ -52,7 +57,6 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   @override
   Widget build(BuildContext context) {
     
-    final priceInfo = Provider.of<PriceInfo>(context, listen:false);
     return Container(
       decoration: const BoxDecoration(
         color: Colors.transparent, // 배경색을 흰색으로 설정
@@ -70,7 +74,7 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
                 0xf635,
                 fontFamily: 'MaterialIcons',
               ),
-              color: widget.isAllTermChecked
+              color: checkbutton
                   ? const Color(0xff28323c)
                   : const Color(0xffc5c8ce),
             ),
@@ -83,13 +87,14 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
           setState(() {
             widget.isAllTermChecked = !value;
             for (int i = 0; i < terms.length; i++) {
-              
               terms[i].isChecked = !value;
-            }
-            priceInfo.updateterms(widget.isAllTermChecked);
-          });
+            } 
+            print(widget.isAllTermChecked);
+            checkbutton = !value;
+            changeValue(widget.isAllTermChecked);
+          });        
         },
-        initiallyExpanded: true,
+        initiallyExpanded: false,
         
         children: [
           Padding(padding: const EdgeInsets.only(left: 10),
@@ -112,29 +117,31 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
   }
 
   void validTermsChecked() {
-  final priceInfo = Provider.of<PriceInfo>(context, listen:false);
-    for (int i = 0; i < terms.length; i++) {
-      if (terms[i].isTermChecked() == false) {
-        setState(
-          () {
-            widget.isAllTermChecked = false;
-            priceInfo.updateterms(false);
-          },
-        );
-        return;
-        
+    bool allChecked = true;
+    for (var term in terms) {
+      if (!term.isTermChecked()) {
+        allChecked = false;
+        break; // 하나라도 체크되지 않은 항목이 있으면 반복을 중단합니다.
       }
     }
-    setState(
-      () {
-        widget.isAllTermChecked = true;
-        print("pass");
-        priceInfo.updateterms(true);
-        _controller.collapse();
-      },
-    );
+
+    setState(() {
+      widget.isAllTermChecked = allChecked;
+    });
+
+    if (allChecked) {
+      // 모든 약관이 체크되었으면 창을 닫습니다.
+      _controller.collapse(); // ExpansionTileController를 사용하여 창을 닫습니다.
+      changeValue(widget.isAllTermChecked);
+      widget.isAllTermChecked = true; // changeValue 함수에 allChecked 상태를 전달합니다.
+    } else {
+      changeValue(widget.isAllTermChecked);
+      widget.isAllTermChecked = false; 
+    }
   }
 }
+
+//_controller.collapse();
 
 class _TermAgreementWidget extends StatefulWidget {
   final void Function() pressCallBack;
@@ -188,6 +195,7 @@ class _TermAgreementWidgetState extends State<_TermAgreementWidget> {
                 widget.isChecked = !widget.isChecked;
                 widget.pressCallBack();
               });
+              
             },
           ),
           Text(
