@@ -83,7 +83,6 @@ class _RentMapPageState extends State<RentMapPage>
     });
 
     for (var nMarker in _nMarkers) {
-      print(nMarker);
       nMarker.setIcon(_getMarkerIcon(nMarker.info.id));
     }
 
@@ -91,7 +90,7 @@ class _RentMapPageState extends State<RentMapPage>
 
     if (_markerId != "") {
       showModalBottomSheet<void>(
-        barrierColor: Color.fromARGB(8, 0, 0, 0),
+        barrierColor: const Color.fromARGB(8, 0, 0, 0),
         context: context,
         useSafeArea: true,
         isScrollControlled: true,
@@ -108,7 +107,7 @@ class _RentMapPageState extends State<RentMapPage>
                 getFoldState: getFoldState,
                 screenHeight: screenHeight,
                 halfScreenHeight: halfScreenHeight,
-                socarZoneId: "RtqMMxDCzwQxj3poUBX9",
+                socarZoneId: _markerId,
               );
             },
           );
@@ -221,10 +220,11 @@ class _RentMapPageState extends State<RentMapPage>
           children: [
             NaverMap(
               options: const NaverMapViewOptions(
-                rotationGesturesEnable: false,
-                contentPadding: EdgeInsets.only(bottom: 60),
-                scaleBarEnable: false,
-              ),
+                  rotationGesturesEnable: false,
+                  contentPadding: EdgeInsets.only(bottom: 60),
+                  scaleBarEnable: false,
+                  initialCameraPosition: NCameraPosition(
+                      target: NLatLng(128.02025, 38.03375), zoom: 8)),
               onMapTapped: (NPoint point, NLatLng latLng) {
                 // 맵 클릭 시 상태 초기화
                 _setMarkerId("");
@@ -263,10 +263,11 @@ class _RentMapPageState extends State<RentMapPage>
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     NCameraUpdate nCameraUpdate = NCameraUpdate.withParams(
-        target: NLatLng(position.latitude, position.longitude));
+        target: NLatLng(position.latitude, position.longitude), zoom: 14);
     if (init) {
       nCameraUpdate.setAnimation(
-          animation: NCameraAnimation.none, duration: Duration(seconds: 0));
+          animation: NCameraAnimation.none,
+          duration: const Duration(seconds: 0));
     }
     mapController?.updateCamera(nCameraUpdate);
   }
