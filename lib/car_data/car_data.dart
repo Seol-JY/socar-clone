@@ -1,51 +1,52 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'package:socar/car_data/car.dart';
-import 'package:socar/car_data/tag_enum.dart';
-
 class CarData {
-  final Car car;
-  final List<TagEnum> tags;
-  final int originFee;
+  final int rentFee;
+  final int driveFee;
   final int discountRate;
+  final String imageUrl;
+  final String name;
 
   CarData({
-    required this.car,
-    required this.tags,
-    required this.originFee,
+    required this.rentFee,
     required this.discountRate,
+    required this.imageUrl,
+    required this.name,
+    required this.driveFee,
   });
 }
 
-List<CarData> dummyData = [
-  CarData(
-      car: dummyCars["지호"]!,
-      tags: [TagEnum.NewCar, TagEnum.Recommand],
-      originFee: 10000,
-      discountRate: 10),
-  CarData(
-      car: dummyCars["민석"]!,
-      tags: [TagEnum.NewCar, TagEnum.Recommand],
-      originFee: 15000,
-      discountRate: 20),
-  CarData(
-      car: dummyCars["진영"]!,
-      tags: [TagEnum.NewCar, TagEnum.Recommand],
-      originFee: 20000,
-      discountRate: 30),
-  CarData(
-      car: dummyCars["지호"]!,
-      tags: [TagEnum.NewCar, TagEnum.Recommand],
-      originFee: 10000,
-      discountRate: 10),
-  CarData(
-      car: dummyCars["민석"]!,
-      tags: [TagEnum.NewCar, TagEnum.Recommand],
-      originFee: 15000,
-      discountRate: 20),
-  CarData(
-      car: dummyCars["진영"]!,
-      tags: [TagEnum.NewCar, TagEnum.Recommand],
-      originFee: 20000,
-      discountRate: 30)
-];
+Future<List<CarData>> getCarDataBySocarZoneId(String documentId) async {
+  List<CarData> result = [];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  CollectionReference collectionReference = firestore.collection('socar_zone');
+  DocumentReference documentReference = collectionReference.doc(documentId);
+  CollectionReference subCollectionReference =
+      documentReference.collection('cars');
+
+  try {
+    QuerySnapshot subCollectionSnapShot = await subCollectionReference.get();
+
+    for (QueryDocumentSnapshot documentSnapshot in subCollectionSnapShot.docs) {
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+
+      DocumentSnapshot carDocument =
+          await (data['car'] as DocumentReference).get();
+
+      Map<String, dynamic> carData = carDocument.data() as Map<String, dynamic>;
+
+      result.add(CarData(
+          rentFee: carData['rent_fee'],
+          discountRate: 10,
+          imageUrl: carData['url'],
+          name: carData['name'],
+          driveFee: carData['drive_km_fee']));
+    }
+  } catch (e) {
+    print('Error getting document: $e');
+  }
+  print(result);
+  return result;
+}

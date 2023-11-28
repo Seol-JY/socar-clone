@@ -68,6 +68,7 @@ class _FoldBottomSheetState extends State<FoldBottomSheet>
                     getFoldState: getFoldState,
                     screenHeight: screenHeight,
                     halfScreenHeight: halfScreenHeight,
+                    socarZoneId: "RtqMMxDCzwQxj3poUBX9",
                   );
                 },
               );
