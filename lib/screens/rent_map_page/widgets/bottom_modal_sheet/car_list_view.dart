@@ -5,23 +5,27 @@ import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/text_styl
 import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 
 class CarListView extends StatelessWidget {
+  final List<CarData> carList;
+
+  const CarListView({required this.carList});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Expanded(
         child: ListView.separated(
           shrinkWrap: true,
-          itemCount: dummyData.length,
+          itemCount: carList.length,
           itemBuilder: (context, index) {
-            CarData carData = dummyData[index];
+            CarData carData = carList[index];
             return ListTile(
-              leading: carData.car.image,
+              leading: Image.network(carData.imageUrl),
               title: Column(
                 children: [
                   Row(
                     children: [
                       Text(
-                        carData.car.modelName,
+                        carData.name,
                         style: carNameStyle,
                       ),
                       Container(
@@ -33,7 +37,7 @@ class CarListView extends StatelessWidget {
                             EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         margin: EdgeInsets.all(10),
                         child: Text(
-                          carData.car.driveFee.toString() + "원/km",
+                          carData.driveFee.toString() + "원/km",
                           style: driveFeeStyle,
                         ),
                       ),
@@ -42,12 +46,12 @@ class CarListView extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "50%",
+                        carData.discountRate.toString(),
                         style: socarBlueStyle,
                       ),
                       PaddingBox(width: 10, height: 0),
                       Text(
-                        "25,560원",
+                        carData.rentFee.toString() + "원/km",
                         style: rentFeeStyle,
                       )
                     ],
@@ -55,7 +59,9 @@ class CarListView extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "5,900원",
+                        (carData.rentFee * (100 - carData.discountRate) / 100)
+                                .toString() +
+                            "원",
                         style: discountRentFeeStyle,
                       ),
                       Spacer(),

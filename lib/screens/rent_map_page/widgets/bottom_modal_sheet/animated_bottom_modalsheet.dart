@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:socar/car_data/car.dart';
 
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/place_widget.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/car_list_view.dart';
 import 'package:socar/constants/color.dart';
 import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/swipe_bar.dart';
+
+import 'package:socar/car_data/car_data.dart';
 
 import '../../../../constants/fold_state_enum.dart';
 
@@ -16,6 +19,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
     required this.fold,
     required this.getFoldState,
     required this.sheetState,
+    required this.socarZoneId,
   }) : super(key: key);
 
   final void Function(bool) fold;
@@ -24,6 +28,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   final double screenHeight;
   final double halfScreenHeight;
   final StateSetter sheetState;
+  final String socarZoneId;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,21 @@ class AnimatedBottomModalSheet extends StatelessWidget {
             ),
           ),
           const PlaceWidget(),
-          CarListView(),
+          FutureBuilder<List<CarData>>(
+            future: getCarDataBySocarZoneId(
+                socarZoneId), // 비동기 함수를 호출하여 Future를 얻습니다.
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('에러: ${snapshot.error}');
+              } else {
+                List<CarData> carDataList = snapshot.data ?? [];
+                print(carDataList);
+                return CarListView(carList: carDataList);
+              }
+            },
+          )
         ],
       ),
     );

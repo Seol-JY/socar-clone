@@ -108,6 +108,7 @@ class _RentMapPageState extends State<RentMapPage>
                 getFoldState: getFoldState,
                 screenHeight: screenHeight,
                 halfScreenHeight: halfScreenHeight,
+                socarZoneId: "RtqMMxDCzwQxj3poUBX9",
               );
             },
           );
