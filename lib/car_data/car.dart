@@ -16,11 +16,15 @@ class Car {
 
 Map<String, Car> dummyCars = {
   "지호": Car(
-      image: Image.asset("images/rio.png"), modelName: "리오", driveFee: 10000),
+      image: Image(image: AssetImage('assets/images/rio.png')),
+      modelName: "리오",
+      driveFee: 10000),
   "민석": Car(
-      image: Image.asset("images/sportage.png"),
+      image: Image(image: AssetImage("assets/images/sportage.png")),
       modelName: "스포티지",
       driveFee: 11000),
   "진영": Car(
-      image: Image.asset("images/bongo.png"), modelName: "봉고", driveFee: 12000),
+      image: Image(image: AssetImage("assets/images/bongo.png")),
+      modelName: "봉고",
+      driveFee: 12000),
 };
