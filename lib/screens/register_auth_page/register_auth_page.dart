@@ -32,7 +32,6 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
   late TimerUtil timerUtil;
 
   UserAuthenticateService userAuthenticateService = UserAuthenticateService();
-
   @override
   void initState() {
     super.initState();
@@ -209,8 +208,9 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
               return;
             }
             Navigator.pushNamed(context, "/register/input",
-                arguments:
-                    InputPageArguments(username: usernameController.text));
+                arguments: InputPageArguments(
+                    username: usernameController.text,
+                    phoneNumber: phoneNumberController.text));
           },
           child: SizedBox(
             height: kToolbarHeight,

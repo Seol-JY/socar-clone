@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:socar/models/user.dart';
 import 'package:socar/services/user_auth_service.dart';
+import 'package:socar/services/user_service.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/screens/register_input_page/widgets/title_textform.dart';
 import 'package:socar/utils/user_input_validator.dart';
@@ -19,6 +21,7 @@ class _RegisterInputState extends State<RegisterInputPage> {
   final TextEditingController _pwValidController = TextEditingController();
   final UserAuthenticateService authenticateService = UserAuthenticateService();
 
+  final UserService userService = UserService();
   @override
   void initState() {
     super.initState();
@@ -116,6 +119,12 @@ class _RegisterInputState extends State<RegisterInputPage> {
             }
             authenticateService
                 .doRegister(_emailController.text, _pwController.text)
+                .then((value) => userService.save(User(
+                      uid: value.user!.uid,
+                      email: _emailController.text,
+                      phoneNumber: args.phoneNumber,
+                      username: args.username,
+                    )))
                 .then((value) => showSuccessModal());
           },
           child: SizedBox(
@@ -206,12 +215,7 @@ class _RegisterInputState extends State<RegisterInputPage> {
                   decoration: bottomButtonStyle,
                   child: Center(
                     child: TextButton(
-                      onPressed: () {
-                        // 회원가입과 동시에 로그인 수행
-                        authenticateService.doLogin(
-                            _emailController.text, _pwController.text);
-                        Navigator.pushNamed(context, "/main");
-                      },
+                      onPressed: toMainPage,
                       child: Text(
                         "서비스 둘러보기",
                         style: bottomButtonTextStyle,
@@ -225,6 +229,12 @@ class _RegisterInputState extends State<RegisterInputPage> {
         });
   }
 
+  void toMainPage() {
+    // 회원가입과 동시에 로그인 수행
+    authenticateService.doLogin(_emailController.text, _pwController.text);
+    Navigator.pushNamed(context, "/main");
+  }
+
   bool isReadyToRegister() {
     return UserInputValidator.validEmailAndPasswordFormat(
             _emailController.text, _pwController.text) &&
@@ -234,6 +244,6 @@ class _RegisterInputState extends State<RegisterInputPage> {
 
 class InputPageArguments {
   final String username;
-
-  InputPageArguments({required this.username});
+  final String phoneNumber;
+  InputPageArguments({required this.username, required this.phoneNumber});
 }

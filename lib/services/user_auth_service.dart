@@ -16,23 +16,26 @@ class UserAuthenticateService {
     return code == UserAuthenticateService._currentCode;
   }
 
-  Future<bool> doRegister(String emailAddress, String password) async {
+  Future<UserCredential> doRegister(
+      String emailAddress, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: emailAddress,
         password: password,
       );
+
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return false;
+        throw Exception("비밀번호 양식이 맞지 않습니다.");
       } else if (e.code == 'email-already-in-use') {
-        return false;
+        throw Exception("이미 가입된 이메일입니다.");
       }
     } catch (e) {
-      return false;
+      throw Exception("알 수 없는 오류입니다.");
     }
-
-    return true;
+    throw Exception("알 수 없는 오류입니다.");
   }
 
   Future<bool> doLogin(String emailAddress, String password) async {
