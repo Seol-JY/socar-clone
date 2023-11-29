@@ -30,4 +30,8 @@ class UserService {
       username: data?['username'] ?? '',
     );
   }
+
+  Future<DocumentReference?> getDocRefByUid(String? uid) async {
+    return _firestore.collection('users').doc(uid);
+  }
 }
