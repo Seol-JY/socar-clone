@@ -245,8 +245,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
     }
     setState(() {
       isAuthCodeSended = true;
-      userAuthenticateService
-          .sendVerifyCode(phoneNumberController.text.substring(1));
+      userAuthenticateService.sendVerifyCode(phoneNumberController.text);
       timerUtil.runTimer();
     });
   }

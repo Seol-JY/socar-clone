@@ -3,19 +3,17 @@ import 'package:socar/services/sms_send.dart';
 import 'dart:math';
 
 class UserAuthenticateService {
-  String? currentCode;
+  static String? _currentCode;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // 비동기 처리를 통한 속도 향상을 기대하기 위해 Future 사용
-  Future<void> sendVerifyCode(String phoneNumber) async {
-    currentCode = _createNewCode();
-
+  void sendVerifyCode(String phoneNumber) async {
+    UserAuthenticateService._currentCode = _createNewCode();
     SmsSendService.sendMessage(
-        "[쏘카] 회원가입을 위한 인증 코드는 $currentCode 입니다.", phoneNumber);
+        "[쏘카] 회원가입을 위한 인증 코드는 $_currentCode 입니다.", phoneNumber);
   }
 
   bool isAuthenticateSucceed(String code) {
-    return code == currentCode;
+    return code == UserAuthenticateService._currentCode;
   }
 
   Future<bool> doRegister(String emailAddress, String password) async {

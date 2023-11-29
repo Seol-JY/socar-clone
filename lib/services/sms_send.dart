@@ -6,7 +6,7 @@ class SmsSendService {
   static const _apiKey = 'NCSI8THKEJ1KFWAI';
   static const _apiSecret = '6KJWHMJ4YHNPEED7UJSD0H2MRAWBNNBT';
 
-  static sendMessage(var text, var receiverPhoneNumber) async {
+  static void sendMessage(var text, var receiverPhoneNumber) async {
     var from = '01090516709'; // 발신번호(문자를 보낼 사람)
     try {
       var response =
