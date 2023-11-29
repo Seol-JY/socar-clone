@@ -1,51 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:socar/services/sms_send.dart';
+import 'dart:math';
 
 class UserAuthenticateService {
-  bool authOk = false;
-  static String? verificationId;
+  String? currentCode;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // 비동기 처리를 통한 속도 향상을 기대하기 위해 Future 사용
   Future<void> sendVerifyCode(String phoneNumber) async {
-    await _auth.verifyPhoneNumber(
-      timeout: const Duration(seconds: 120),
-      codeAutoRetrievalTimeout: (String verificationId) {
-        // Auto-resolution timed out...
-      },
-      phoneNumber: "+82$phoneNumber",
-      verificationCompleted: (phoneAuthCredential) async {},
-      verificationFailed: (verificationFailed) async {},
-      codeSent: (verificationId, resendingToken) async {
-        UserAuthenticateService.verificationId = verificationId;
-      },
-    );
+    currentCode = _createNewCode();
+
+    SmsSendService.sendMessage(
+        "[쏘카] 회원가입을 위한 인증 코드는 $currentCode 입니다.", phoneNumber);
   }
 
-  Future<void> isAuthenticateSucceed(String code) async {
-    PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-        verificationId: UserAuthenticateService.verificationId!, smsCode: code);
-    try {
-      await _signInWithPhoneAuthCredential(phoneAuthCredential);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<void> _signInWithPhoneAuthCredential(
-      PhoneAuthCredential phoneAuthCredential) async {
-    try {
-      final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
-
-      if (authCredential.user == null) {
-        throw Exception("인증 코드가 잘못되었거나 만료되었습니다.");
-      }
-
-      // 휴대폰 전화번호로 로그인 된거 로그아웃 및 유저 제거
-      await _auth.currentUser!.delete();
-      _auth.signOut();
-    } on FirebaseAuthException {
-      throw Exception("인증 코드가 잘못되었거나 만료되었습니다.");
-    }
+  bool isAuthenticateSucceed(String code) {
+    return code == currentCode;
   }
 
   Future<bool> doRegister(String emailAddress, String password) async {
@@ -80,5 +50,12 @@ class UserAuthenticateService {
     }
 
     return true;
+  }
+
+  String _createNewCode() {
+    Random random = Random();
+    String code = random.nextInt(1000000).toString().padLeft(6, "0");
+
+    return code;
   }
 }

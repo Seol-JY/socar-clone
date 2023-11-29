@@ -1,4 +1,3 @@
-
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,32 +14,28 @@ import 'package:socar/screens/payment_page/widgets/text_info.dart';
 import 'package:socar/services/sms_send.dart';
 import 'utils/time_check.dart';
 
-
-
 Widget paddingDivider() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
-      child: Divider(
-        thickness: 1,
-        height: 1,
-        color: Colors.black.withOpacity(0.3),
-      ),
-    );
-  }
-
+  return Padding(
+    padding: const EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
+    child: Divider(
+      thickness: 1,
+      height: 1,
+      color: Colors.black.withOpacity(0.3),
+    ),
+  );
+}
 
 class Reservationpaymentpage extends StatelessWidget {
-  
+  const Reservationpaymentpage({super.key});
+
+  @override
   Widget build(BuildContext context) {
     return const ReservationInfo();
   }
 }
 
-
-
 class ReservationInfo extends StatefulWidget {
   const ReservationInfo({super.key});
-  
 
   @override
   State<ReservationInfo> createState() => _ReservationInfoState();
@@ -50,13 +45,12 @@ class _ReservationInfoState extends State<ReservationInfo> {
   final GlobalKey<_BottompaybarState> bottomBarKey = GlobalKey();
   String insuranceSelected = "";
   bool mainSelected = false;
-  String carName = ""; 
+  String carName = "";
   String oilType = "";
   int driveFee = 0;
   int rentFee = 0;
   String image_url = "";
-  
-  
+
   @override
   void initState() {
     super.initState();
@@ -67,13 +61,13 @@ class _ReservationInfoState extends State<ReservationInfo> {
   Future<void> fetchDataFromFirestore() async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      DocumentSnapshot doc = await firestore.collection("car").doc("avanteN").get();
+      DocumentSnapshot doc =
+          await firestore.collection("car").doc("avanteN").get();
       setState(() {
         carName = doc.get("name");
         oilType = doc.get("oil_type");
         driveFee = doc.get("drive_km_fee");
         rentFee = doc.get("rent_fee");
-        
       });
     } catch (error) {
       print("Error: $error");
@@ -107,26 +101,33 @@ class _ReservationInfoState extends State<ReservationInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CarInfo(carimage: "https://img1.daumcdn.net/thumb/R400x0/?fname=%2Fmedia%2Fvitraya%2Fauto%2Fimage%2F8eac04%2FC672C539077C8F46909D9A13CA6A7E7AFDF06B2CF21721E72B_6U9U", carname: carName, oiltype: oilType),
+              CarInfo(
+                  carimage:
+                      "https://img1.daumcdn.net/thumb/R400x0/?fname=%2Fmedia%2Fvitraya%2Fauto%2Fimage%2F8eac04%2FC672C539077C8F46909D9A13CA6A7E7AFDF06B2CF21721E72B_6U9U",
+                  carname: carName,
+                  oiltype: oilType),
               paddingDivider(),
               DrivingFee(drivingfee: driveFee.toString()),
               paddingDivider(),
-              Returnlocation(returnLocation : "주차장 정보"),
+              const Returnlocation(returnLocation: "주차장 정보"),
               paddingDivider(),
-              Usetime(startTime : "2023-11-08T14:30:00Z" , endTime : "2023-11-08T20:30:00Z"),
+              const Usetime(
+                  startTime: "2023-11-08T14:30:00Z",
+                  endTime: "2023-11-08T20:30:00Z"),
               paddingDivider(),
               InsuranceContainer(
                 onOptionSelected: (selected) {
                   setState(() {
-                    insuranceSelected = selected??"";
+                    insuranceSelected = selected ?? "";
                     updateBottomBarState();
                   });
                 },
               ),
               paddingDivider(),
-              Finalprice(rentalFee: rentFee.toString(), insuranceFee : insuranceSelected),
+              Finalprice(
+                  rentalFee: rentFee.toString(),
+                  insuranceFee: insuranceSelected),
               paddingDivider(),
-
               TermAgreementBoxWidget(
                 onData: (selected) {
                   setState(() {
@@ -144,11 +145,8 @@ class _ReservationInfoState extends State<ReservationInfo> {
       ),
       bottomNavigationBar: Bottompaybar(key: bottomBarKey),
     );
-  } 
+  }
 }
-
-        
-     
 
 class Bottompaybar extends StatefulWidget {
   const Bottompaybar({Key? key}) : super(key: key);
@@ -162,42 +160,41 @@ class _BottompaybarState extends State<Bottompaybar> {
   bool terms = false;
   bool isButtonActive = false;
 
-  
   void updateButtonState(bool isActive) {
-      setState(() {
-        print("is button active ${isActive}");
-        isButtonActive = isActive;
-        print("is button active ${isButtonActive}");
-      }); 
-    }
+    setState(() {
+      print("is button active $isActive");
+      isButtonActive = isActive;
+      print("is button active $isButtonActive");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-            onPressed: isButtonActive ? () {
+      onPressed: isButtonActive
+          ? () {
               Navigator.pushNamed(context, '/completePayment');
-              SMSsend("차량예약이 완료되었습니다.");
-            } : null, 
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
-                backgroundColor: isButtonActive ? ColorPalette.socarBlue : ColorPalette.gray300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  side: const BorderSide(
-                    color: Color(0xffE9EBEE),
-                  ),
-                ),
-              ),
-              child: const Text(
-                "결제하기",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: ColorPalette.white,
-                ),
-            ),
-        );
-  }  
+              SmsSendService.sendMessage("차량예약이 완료되었습니다.", '01090516709');
+            }
+          : null,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.fromLTRB(70, 30, 70, 30),
+        backgroundColor:
+            isButtonActive ? ColorPalette.socarBlue : ColorPalette.gray300,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0),
+          side: const BorderSide(
+            color: Color(0xffE9EBEE),
+          ),
+        ),
+      ),
+      child: const Text(
+        "결제하기",
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: ColorPalette.white,
+        ),
+      ),
+    );
+  }
 }
-
-
-

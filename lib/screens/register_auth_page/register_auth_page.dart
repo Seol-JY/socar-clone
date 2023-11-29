@@ -204,12 +204,13 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
               return;
             }
 
-            widget.userAuthService
-                .isAuthenticateSucceed(authCodeController.text)
-                .then((value) => Navigator.pushNamed(context, "/register/input",
-                    arguments:
-                        InputPageArguments(username: usernameController.text)))
-                .catchError((e) => {print(e)});
+            if (!widget.userAuthService
+                .isAuthenticateSucceed(authCodeController.text)) {
+              return;
+            }
+            Navigator.pushNamed(context, "/register/input",
+                arguments:
+                    InputPageArguments(username: usernameController.text));
           },
           child: SizedBox(
             height: kToolbarHeight,
