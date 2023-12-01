@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socar/models/socar_zone.dart';
 
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/place_widget.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/car_list_view.dart';
@@ -18,7 +19,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
     required this.fold,
     required this.getFoldState,
     required this.sheetState,
-    required this.socarZoneId,
+    required this.socarZone,
   }) : super(key: key);
 
   final void Function(bool) fold;
@@ -27,7 +28,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   final double screenHeight;
   final double halfScreenHeight;
   final StateSetter sheetState;
-  final String socarZoneId;
+  final SocarZone socarZone;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
           const PlaceWidget(),
           FutureBuilder<List<CarData>>(
             future: getCarDataBySocarZoneId(
-                socarZoneId), // 비동기 함수를 호출하여 Future를 얻습니다.
+                socarZone.id), // 비동기 함수를 호출하여 Future를 얻습니다.
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();

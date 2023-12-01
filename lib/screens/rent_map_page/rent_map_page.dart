@@ -102,13 +102,13 @@ class _RentMapPageState extends State<RentMapPage>
               double halfScreenHeight = screenHeight / 2;
 
               return AnimatedBottomModalSheet(
-                sheetState: sheetState,
-                fold: fold,
-                getFoldState: getFoldState,
-                screenHeight: screenHeight,
-                halfScreenHeight: halfScreenHeight,
-                socarZoneId: _markerId,
-              );
+                  sheetState: sheetState,
+                  fold: fold,
+                  getFoldState: getFoldState,
+                  screenHeight: screenHeight,
+                  halfScreenHeight: halfScreenHeight,
+                  socarZone: socarZones
+                      .firstWhere((socarZone) => socarZone.id == markerId));
             },
           );
         },
