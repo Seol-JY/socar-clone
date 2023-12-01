@@ -67,7 +67,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
               ),
             ),
           ),
-          const PlaceWidget(),
+          PlaceWidget(socarZone: socarZone),
           FutureBuilder<List<CarData>>(
             future: getCarDataBySocarZoneId(
                 socarZone.id), // 비동기 함수를 호출하여 Future를 얻습니다.
