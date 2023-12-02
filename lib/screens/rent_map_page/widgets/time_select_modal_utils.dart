@@ -47,12 +47,14 @@ class TimeSelectModal extends StatefulWidget {
 class _TimeSelectModalState extends State<TimeSelectModal> {
   late DateTimeRange _currentTimeRange;
   late bool _currentIsChanged;
+  late DateTime _minimumDateTime;
 
   @override
   void initState() {
     super.initState();
     _currentTimeRange = widget.timeRange;
     _currentIsChanged = widget.isChanged;
+    _minimumDateTime = _currentTimeRange.start;
   }
 
   void setIsChanged() {
@@ -184,7 +186,7 @@ class _TimeSelectModalState extends State<TimeSelectModal> {
                                           _currentTimeRange);
                                     },
                                     minuteInterval: 10,
-                                    minimumDate: _currentTimeRange.start,
+                                    minimumDate: _minimumDateTime,
                                     initialDateTime: _currentTimeRange.start
                                         .add(Duration(microseconds: 1)),
                                     showDayOfWeek: true,

@@ -224,7 +224,7 @@ class _RentMapPageState extends State<RentMapPage>
                   contentPadding: EdgeInsets.only(bottom: 60),
                   scaleBarEnable: false,
                   initialCameraPosition: NCameraPosition(
-                      target: NLatLng(128.02025, 38.03375), zoom: 8)),
+                      target: NLatLng(36.136440, 128.398863), zoom: 8)),
               onMapTapped: (NPoint point, NLatLng latLng) {
                 // 맵 클릭 시 상태 초기화
                 _setMarkerId("");
