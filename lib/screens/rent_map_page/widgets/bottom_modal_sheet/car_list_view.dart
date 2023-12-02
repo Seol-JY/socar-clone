@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:socar/car_data/car_data.dart';
+import 'package:socar/constants/color.dart';
 import 'package:socar/screens/main_page/main_page.dart';
+import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/icon_row.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/text_styles.dart';
 import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 
@@ -80,9 +82,29 @@ class CarListView extends StatelessWidget {
             if (reservationList.contains(carData.imageUrl))
               Positioned.fill(
                 child: Container(
-                  color: Colors.black.withOpacity(0.5), // 투명도 조절
+                  color: Colors.grey.withOpacity(0.5), // 투명도 조절
                 ),
               ),
+            if (reservationList.contains(carData.imageUrl))
+              Positioned.fill(
+                child: Center(
+                  child: GestureDetector(
+                      onTap: () {
+                        print(1);
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          width: 160,
+                          color: ColorPalette.white,
+                          child: IconRowWidget(
+                            icon: Icons.access_alarm,
+                            text: "예약시간 변경",
+                          ),
+                        ),
+                      )),
+                ),
+              )
           ]);
         },
         separatorBuilder: (context, index) => Divider(),
