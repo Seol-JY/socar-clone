@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:socar/constants/color.dart';
+import 'package:socar/models/socar_zone.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/icon_row.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/text_styles.dart';
 import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 
 class PlaceWidget extends StatelessWidget {
-  const PlaceWidget({Key? key}) : super(key: key);
+  const PlaceWidget({Key? key, required this.socarZone}) : super(key: key);
+
+  final SocarZone socarZone;
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +23,10 @@ class PlaceWidget extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             margin: const EdgeInsets.all(10),
-            child: const Text("지상"),
+            child: Text(socarZone.elevationType),
           ),
           Text(
-            "효성유료주차장",
+            socarZone.name,
             style: parkingNameStyle,
           ),
           Spacer(),
@@ -51,7 +54,7 @@ class PlaceWidget extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "옥산유료주차장",
+                                  socarZone.name,
                                   style: parkingNameStyle,
                                 ),
                                 const PaddingBox(
@@ -59,7 +62,7 @@ class PlaceWidget extends StatelessWidget {
                                   height: 0,
                                 ),
                                 Text(
-                                  "인동서한이다음아파트 옆",
+                                  socarZone.name,
                                   style: socarGray300Style,
                                 )
                               ],
@@ -71,7 +74,7 @@ class PlaceWidget extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
-                                  image: AssetImage('assets/images/park.jpg'),
+                                  image: NetworkImage(socarZone.imgSrc),
                                   fit: BoxFit.cover),
                             ),
                             child: const PaddingBox(
@@ -82,11 +85,12 @@ class PlaceWidget extends StatelessWidget {
                         ],
                       ),
                       IconRowWidget(
-                          icon: Icons.fmd_good_sharp,
-                          text: "경북 구미시 인의동 576-1 구미지게차 주차장"),
-                      IconRowWidget(icon: Icons.drive_eta, text: "지상 1층"),
+                          icon: Icons.fmd_good_sharp, text: socarZone.address),
                       IconRowWidget(
-                          icon: Icons.access_time_filled_sharp, text: "24시간")
+                          icon: Icons.drive_eta, text: socarZone.spot),
+                      IconRowWidget(
+                          icon: Icons.access_time_filled_sharp,
+                          text: "${socarZone.serviceHours}시간")
                     ]),
                   );
                 },

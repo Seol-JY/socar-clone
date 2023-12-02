@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:socar/models/socar_zone.dart';
+import 'package:socar/screens/main_page/main_page.dart';
 
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/place_widget.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/car_list_view.dart';
@@ -10,6 +13,8 @@ import 'package:socar/car_data/car_data.dart';
 
 import '../../../../constants/fold_state_enum.dart';
 
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
 class AnimatedBottomModalSheet extends StatelessWidget {
   const AnimatedBottomModalSheet({
     required this.screenHeight,
@@ -18,7 +23,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
     required this.fold,
     required this.getFoldState,
     required this.sheetState,
-    required this.socarZoneId,
+    required this.socarZone,
   }) : super(key: key);
 
   final void Function(bool) fold;
@@ -27,11 +32,60 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   final double screenHeight;
   final double halfScreenHeight;
   final StateSetter sheetState;
-  final String socarZoneId;
+  final SocarZone socarZone;
+
+  Future<List<ReservationData>> fetchReservationDataBySocarZone(
+      SocarZone socarZone) async {
+    try {
+      Timestamp now = Timestamp.now();
+      // Firebase에서 데이터 가져오기
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference collectionReference =
+          firestore.collection('socar_zone');
+      DocumentReference socarZoneData = collectionReference.doc(socarZone.id);
+
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('reservations')
+          //.where('socar_zone', isEqualTo: socarZoneData)
+          .where('end_time', isGreaterThan: now)
+          .get();
+
+      // 비동기 작업을 병렬로 수행하기 위해 Future.wait 사용
+      List<Future<ReservationData>> futures =
+          querySnapshot.docs.map((DocumentSnapshot document) async {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+        DocumentSnapshot reservedCarSnapshot = await data['reserved_car'].get();
+        DocumentSnapshot socarZoneSnapshot = await data['socar_zone'].get();
+        DocumentSnapshot userSnapshot = await data['user'].get();
+        DocumentSnapshot carSnapshot = await reservedCarSnapshot['car'].get();
+
+        return ReservationData(
+          userName: userSnapshot['username'],
+          carImageURL: carSnapshot['url'],
+          carNumber: reservedCarSnapshot['license_number'],
+          reservationStartTime:
+              data['start_time'].toDate(), // Timestamp를 DateTime으로 변환
+          reservationEndTime:
+              data['end_time'].toDate(), // Timestamp를 DateTime으로 변환
+          parkingLocation: socarZoneSnapshot['name'],
+        );
+      }).toList();
+
+      // 모든 비동기 작업이 완료될 때까지 기다림
+      List<ReservationData> reservations = await Future.wait(futures);
+      return reservations;
+    } catch (e) {
+      // 에러 처리
+      print('Error fetching reservation data: $e');
+      throw e;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     int foldState = getFoldState();
+    List<String> reservationList = [];
 
     return AnimatedContainer(
       curve: Curves.easeInBack,
@@ -66,18 +120,31 @@ class AnimatedBottomModalSheet extends StatelessWidget {
               ),
             ),
           ),
-          const PlaceWidget(),
-          FutureBuilder<List<CarData>>(
-            future: getCarDataBySocarZoneId(
-                socarZoneId), // 비동기 함수를 호출하여 Future를 얻습니다.
+          PlaceWidget(socarZone: socarZone),
+          FutureBuilder(
+            future: Future.wait([
+              getCarDataBySocarZoneId(socarZone.id),
+              fetchReservationDataBySocarZone(socarZone)
+            ]),
+            // 비동기 함수를 호출하여 Future를 얻습니다.
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('에러: ${snapshot.error}');
               } else {
-                List<CarData> carDataList = snapshot.data ?? [];
-                return CarListView(carList: carDataList);
+                List<dynamic> data = snapshot.data ?? [];
+
+                List<CarData> carDataList = data[0] ?? [];
+                List<ReservationData> carReservation = data[1] ?? [];
+                List<String> imgUrls = [];
+
+                for (ReservationData data in carReservation) {
+                  imgUrls.add(data.carImageURL);
+                }
+
+                return CarListView(
+                    carList: carDataList, reservationList: imgUrls);
               }
             },
           )
