@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:socar/utils/CustomDateUtils.dart';
+import 'package:socar/utils/date_time_util.dart';
 
 class TimeSelectModalUtils {
   static void showCustomModal(
@@ -47,9 +48,12 @@ class TimeSelectModal extends StatefulWidget {
 class _TimeSelectModalState extends State<TimeSelectModal> {
   late DateTimeRange _currentTimeRange;
   late bool _currentIsChanged;
-  late DateTime _minimumDateTime = DateTime.now()
+
+  final DateTime _minimumDateTime = DateTimeUtil.getCurrentDateTimeTruncated()
       .add(const Duration(minutes: 20))
-      .subtract(Duration(minutes: DateTime.now().minute % 10));
+      .subtract(Duration(
+        minutes: DateTime.now().minute % 10,
+      ));
 
   @override
   void initState() {
