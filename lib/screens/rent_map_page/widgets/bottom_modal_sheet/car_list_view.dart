@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 
 import 'package:socar/car_data/car_data.dart';
+import 'package:socar/screens/main_page/main_page.dart';
 import 'package:socar/screens/rent_map_page/widgets/bottom_modal_sheet/text_styles.dart';
 import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 
 class CarListView extends StatelessWidget {
   final List<CarData> carList;
+  final List<String> reservationList;
 
-  const CarListView({required this.carList});
+  const CarListView({required this.carList, required this.reservationList});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Expanded(
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: carList.length,
-          itemBuilder: (context, index) {
-            CarData carData = carList[index];
-            return ListTile(
+    return Expanded(
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: carList.length,
+        itemBuilder: (context, index) {
+          CarData carData = carList[index];
+          return Stack(children: [
+            ListTile(
               leading: Image.network(carData.imageUrl),
               title: Column(
                 children: [
@@ -74,10 +76,16 @@ class CarListView extends StatelessWidget {
                   )
                 ],
               ),
-            );
-          },
-          separatorBuilder: (context, index) => Divider(),
-        ),
+            ),
+            if (reservationList.contains(carData.imageUrl))
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.5), // 투명도 조절
+                ),
+              ),
+          ]);
+        },
+        separatorBuilder: (context, index) => Divider(),
       ),
     );
   }
