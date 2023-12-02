@@ -47,14 +47,15 @@ class TimeSelectModal extends StatefulWidget {
 class _TimeSelectModalState extends State<TimeSelectModal> {
   late DateTimeRange _currentTimeRange;
   late bool _currentIsChanged;
-  late DateTime _minimumDateTime;
+  late DateTime _minimumDateTime = DateTime.now()
+      .add(const Duration(minutes: 20))
+      .subtract(Duration(minutes: DateTime.now().minute % 10));
 
   @override
   void initState() {
     super.initState();
     _currentTimeRange = widget.timeRange;
     _currentIsChanged = widget.isChanged;
-    _minimumDateTime = _currentTimeRange.start;
   }
 
   void setIsChanged() {
