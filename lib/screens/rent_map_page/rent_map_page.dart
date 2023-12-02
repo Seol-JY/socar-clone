@@ -107,6 +107,9 @@ class _RentMapPageState extends State<RentMapPage>
                   getFoldState: getFoldState,
                   screenHeight: screenHeight,
                   halfScreenHeight: halfScreenHeight,
+                  timeRange: timeRange,
+                  isChanged: isChanged,
+                  updateTimeRange: updateTimeRange,
                   socarZone: socarZones
                       .firstWhere((socarZone) => socarZone.id == markerId));
             },
