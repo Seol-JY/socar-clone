@@ -6,10 +6,10 @@ class CustomDateUtils {
     final DateFormat dateFormat = DateFormat('M. d. (EEE) ', "ko");
     final DateFormat timeFormat = DateFormat('H:mm', "ko");
 
-    if (dateTime.day == DateTime.now().day) {
+    if (isSameDay(dateTime, DateTime.now())) {
       return "${usePerfix ? "오늘 " : ""}${timeFormat.format(dateTime)}";
-    } else if (dateTime.day ==
-        DateTime.now().add(const Duration(days: 1)).day) {
+    } else if (isSameDay(
+        dateTime, DateTime.now().add(const Duration(days: 1)))) {
       return "${usePerfix ? "내일 " : ""}${timeFormat.format(dateTime)}";
     } else {
       return "${usePerfix ? dateFormat.format(dateTime) : ""}${timeFormat.format(dateTime)}";
@@ -20,10 +20,16 @@ class CustomDateUtils {
     final DateTime start = dateTimeRange.start;
     final DateTime end = dateTimeRange.end;
 
-    if (start.day == end.day) {
+    if (isSameDay(start, end)) {
       return "${singleDateTimeFormatter(start)} - ${singleDateTimeFormatter(end, usePerfix: false)}";
     }
     return "${singleDateTimeFormatter(start)} - ${singleDateTimeFormatter(end)}";
+  }
+
+  static bool isSameDay(DateTime start, DateTime end) {
+    return (start.year == end.year) &&
+        (start.month == end.month) &&
+        (start.day == end.day);
   }
 
   static String durationFormatter(Duration duration) {
