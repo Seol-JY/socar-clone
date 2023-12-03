@@ -56,7 +56,7 @@ class _ReservationInfoState extends State<ReservationInfo> {
   String imageUrl = "";
   String socarZoneReference = "";
   String socarZoneCarRefer = "";
-
+  String carNumber = "";
   @override
   void initState() {
     super.initState();
@@ -74,9 +74,6 @@ class _ReservationInfoState extends State<ReservationInfo> {
     // 'socar_zone' 컬렉션에서 차량 정보를 가져옵니다.
    QuerySnapshot socarZoneSnapshot = await firestore.collection('socar_zone').get();
   
-  
-  
-
   for (var doc in socarZoneSnapshot.docs) {
     DocumentReference docRef = doc.reference;
     QuerySnapshot carsSnapshot = await docRef.collection('cars').get();
@@ -86,18 +83,15 @@ class _ReservationInfoState extends State<ReservationInfo> {
     if (data != null) { // 데이터가 null이 아닌지 확인
       var licenseNumber = data['license_number'];
       if (licenseNumber == '236호2333') { // 특정 차 번호를 확인
-
-        print('Found car document path: ${carDoc.reference.path}');
+        carNumber = licenseNumber;
+        //print('Found car document path: ${carDoc.reference.path}');
         socarZoneCarRefer = carDoc.reference.path;
         socarZoneReference = doc.reference.path;
 
-        // 'car' 필드에서 DocumentReference를 가져옵니다.
         DocumentReference carRef = data['car'] as DocumentReference;
 
-        // 해당 차량 문서의 스냅샷을 비동기적으로 가져옵니다.
         DocumentSnapshot carSnapshot = await carRef.get();
 
-      // 차량 문서의 실제 데이터를 가져옵니다.
       if (carSnapshot.exists) {
         setState(() {
           var carData = carSnapshot.data() as Map<String, dynamic>;
@@ -201,7 +195,8 @@ class _ReservationInfoState extends State<ReservationInfo> {
       bottomNavigationBar: Bottompaybar(
         key: bottomBarKey, 
       socarZone: socarZoneReference,
-      carReference:socarZoneCarRefer,),
+      carReference:socarZoneCarRefer,
+      licenseNumber: carNumber,),
     );
   }
 }
@@ -209,10 +204,12 @@ class _ReservationInfoState extends State<ReservationInfo> {
 class Bottompaybar extends StatefulWidget {
   final String socarZone;
   final String carReference;
+  final String licenseNumber;
   const Bottompaybar({
     Key? key,
     required this.carReference,
     required this.socarZone,
+    required this.licenseNumber,
   }) : super(key: key);
 
   @override
@@ -224,34 +221,24 @@ class _BottompaybarState extends State<Bottompaybar> {
   bool terms = false;
   bool isButtonActive = false;
   String userPhoneNumber = "";
-
-  Future<void> saveDateToFirestore() async {
+  DocumentReference? reservation_info;
+  
+  
+  Future<DocumentReference<Object?>> saveDateToFirestore() async {
   fireAuth.FirebaseAuth auth = fireAuth.FirebaseAuth.instance;
   String? userUid = auth.currentUser?.uid;
   UserService userService = UserService();
 
   if (userUid != null) {
-    // 사용자 데이터를 가져옵니다.
     User? user = await userService.findByUid(userUid);
 
-    // 가져온 사용자 데이터에서 전화번호를 추출합니다.
     String? userPhoneNumber = user?.phoneNumber;
-    print(userPhoneNumber);
-
-    // 이제 userPhoneNumber를 사용할 수 있습니다.
-    // 예를 들어, Firestore에 데이터를 저장하는 로직을 추가할 수 있습니다.
   }
 
-  
-
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // Firestore 문서 경로 설정
   DocumentReference ref = firestore.collection('reservations').doc();
-
-  // UTC 날짜 문자열을 DateTime 객체로 파싱합니다.
   DateTime startTimeUtc = DateTime.parse("2023-12-02T14:30:00Z");
   DateTime endTimeUtc = DateTime.parse("2023-12-13T20:30:00Z");
-
 
   Timestamp startTimestamp = Timestamp.fromDate(startTimeUtc);
   Timestamp endTimestamp = Timestamp.fromDate(endTimeUtc);
@@ -260,17 +247,27 @@ class _BottompaybarState extends State<Bottompaybar> {
   DocumentReference socarzoneRef = firestore.doc(widget.socarZone);
   DocumentReference userRef = firestore.doc('users/${userUid}');
   
-  // Firestore 문서에 날짜를 저장합니다.
-  await ref.set({
-    'start_time': startTimestamp,
-    'end_time': endTimestamp,
-    'reserved_car' : carRef,
-    'socar_zone' : socarzoneRef,
-    'total_price' : 23490,
-    'user' : userRef,
-  });
-  print("good");
+  try {
+    await ref.set({
+      'start_time': startTimestamp,
+      'end_time': endTimestamp,
+      'reserved_car': carRef,
+      'socar_zone': socarzoneRef,
+      'total_price': 23490,
+      'user': userRef,
+    });
+
+    // 'set' 메서드가 완료되었을 때 실행되는 코드
+    return ref;
+  } catch (error) {
+    // 오류가 발생했을 때 처리하는 코드
+    print("Error setting document: $error");
+    // return null 또는 다른 fallback 값 (예: throw Exception('Error setting document');)
+    return Future.value(null);
+  }
 }
+    
+  
 
   void updateButtonState(bool isActive) {
     setState(() {
@@ -282,10 +279,13 @@ class _BottompaybarState extends State<Bottompaybar> {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: isButtonActive
-          ? () {
-              Navigator.pushNamed(context, '/completePayment');
-              SmsSendService.sendMessage("차량예약이 완료되었습니다.", userPhoneNumber);
-              saveDateToFirestore();
+          ? () async {
+              DocumentReference? result = await saveDateToFirestore();
+              Navigator.pushNamed(context,  '/completePayment',
+               arguments: {
+                "license_number": widget.licenseNumber , 
+                "docRef": result} );
+              //SmsSendService.sendMessage("차량예약이 완료되었습니다.", userPhoneNumber);
             }
           : null,
       style: TextButton.styleFrom(

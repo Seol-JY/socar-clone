@@ -25,12 +25,10 @@ class CompletePayment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: Scaffold(
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final licenseNumber = arguments?['license_number'] as String?;
+    return 
+      Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white, //appBar 투명색
           elevation: 0.0,
@@ -77,11 +75,8 @@ class CompletePayment extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ReservationConfirm()),
-                    );
+                    Navigator.pushNamed(context, "/reservationConfirm" ,
+                    arguments:arguments);
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
@@ -115,7 +110,7 @@ class CompletePayment extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      
     );
   }
 }

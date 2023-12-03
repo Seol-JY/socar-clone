@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
 
 class SmartkeyBottomBar extends StatelessWidget {
-  const SmartkeyBottomBar({Key? key}) : super(key: key);
+  final VoidCallback onDeleteRef;
+  const SmartkeyBottomBar({Key? key, required this.onDeleteRef}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,19 +14,19 @@ class SmartkeyBottomBar extends StatelessWidget {
       child: BottomAppBar(
         color: Colors.transparent,
         elevation: 0.0,
-        child: buildBottomBarContent(),
+        child: buildBottomBarContent(context),
       ),
     );
   }
 
-  Widget buildBottomBarContent() {
+  Widget buildBottomBarContent(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildSmartKeyStatus(),
-        buildBottomBarButtons(),
+        buildBottomBarButtons(context),
       ],
     );
   }
@@ -42,26 +43,28 @@ class SmartkeyBottomBar extends StatelessWidget {
     );
   }
 
-  Widget buildBottomBarButtons() {
+  Widget buildBottomBarButtons(BuildContext context) {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildReturnButton(),
+          buildReturnButton(context),
           buildLockButtons(),
         ],
       ),
     );
   }
-
-Widget buildReturnButton() {
+Widget buildReturnButton(BuildContext context) {
   return Expanded(
     flex: 5,
     child: Center(
       child: Container(
         height: 70, // Adjust the height as needed
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            // Call a function to show the dialog
+            _showReturnDialog(context);
+          },
           child: Text(
             "반납하기",
             style: TextStyle(color: ColorPalette.gray600, fontWeight: FontWeight.w700),
@@ -77,6 +80,34 @@ Widget buildReturnButton() {
         ),
       ),
     ),
+  );
+}
+
+void _showReturnDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("반납 확인"),
+        content: Text("정말로 반납하시겠습니까?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Close the dialog
+              Navigator.of(context).pop();
+            },
+            child: Text("취소"),
+          ),
+          TextButton(
+            onPressed: () {
+              onDeleteRef();
+              Navigator.pushNamed(context, "/main");
+            },
+            child: Text("확인"),
+          ),
+        ],
+      );
+    },
   );
 }
 
