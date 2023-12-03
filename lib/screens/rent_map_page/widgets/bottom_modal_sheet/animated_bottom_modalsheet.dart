@@ -46,13 +46,17 @@ class AnimatedBottomModalSheet extends StatelessWidget {
 
       QuerySnapshot querySnapshot = await _firestore
           .collection('reservations')
-          //.where('socar_zone', isEqualTo: socarZoneData)
           .where('end_time', isGreaterThan: now)
           .get();
 
       // 비동기 작업을 병렬로 수행하기 위해 Future.wait 사용
-      List<Future<ReservationData>> futures =
-          querySnapshot.docs.map((DocumentSnapshot document) async {
+      List<Future<ReservationData>> futures = querySnapshot.docs.where((doc) {
+        Timestamp startTime = doc['start_time'];
+
+        DateTime startDateTime = startTime.toDate();
+
+        return startDateTime.isBefore(now.toDate());
+      }).map((DocumentSnapshot document) async {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
 
         DocumentSnapshot reservedCarSnapshot = await data['reserved_car'].get();
