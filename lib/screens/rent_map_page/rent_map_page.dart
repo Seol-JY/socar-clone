@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:socar/constants/colors.dart';
 import 'package:socar/models/socar_zone.dart';
 import 'package:socar/screens/rent_map_page/utils/LocationPermissionManager.dart';
+import 'package:socar/utils/date_time_util.dart';
 import 'package:socar/widgets/nav_drawer.dart';
 import 'package:socar/screens/rent_map_page/widgets/rent_app_bar.dart';
 import 'package:socar/screens/rent_map_page/widgets/time_select_btn.dart';
@@ -50,14 +51,17 @@ class _RentMapPageState extends State<RentMapPage>
     return foldState;
   }
 
-  late DateTimeRange timeRange = new DateTimeRange(
-    start: DateTime.now()
-        .add(Duration(minutes: 20))
-        .subtract(Duration(minutes: DateTime.now().minute % 10)),
-    end: DateTime.now()
-        .add(Duration(minutes: 20))
-        .subtract(Duration(minutes: DateTime.now().minute % 10))
-        .add(Duration(hours: 4)),
+  late DateTimeRange timeRange = DateTimeRange(
+    start: DateTimeUtil.getCurrentDateTimeTruncated()
+        .add(const Duration(minutes: 20))
+        .subtract(Duration(
+          minutes: DateTime.now().minute % 10,
+        )),
+    end: DateTimeUtil.getCurrentDateTimeTruncated()
+        .add(const Duration(hours: 4, minutes: 20))
+        .subtract(Duration(
+          minutes: DateTime.now().minute % 10,
+        )),
   );
 
   // 시간이 초깃값과 다른지 확인하기 위한 용도
