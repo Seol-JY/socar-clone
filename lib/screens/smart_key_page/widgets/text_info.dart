@@ -5,41 +5,41 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 
 
-Widget buildCarImage() {
+Widget buildCarImage(String url) {
     return Image.network(
-      "https://search.pstatic.net/common?quality=75&direct=true&ttype=input&src=https%3A%2F%2Fdbscthumb-phinf.pstatic.net%2F5662_000_7%2F20220308115005215_IDAC9KDM0.png%2F20220308104410_3.png%3Ftype%3Dm1500",
+      url,
       width: 100,
       height: 100,
     );
   }
 
-  Widget buildCarTitle() {
+  Widget buildCarTitle(String CarName) {
     return Text(
-      "더뉴아반떼CN7",
+      CarName,
       style: TextStyle(color: ColorPalette.white, fontSize: 20, fontWeight: FontWeight.w700),
       textAlign: TextAlign.center,
     );
   }
 
-  Widget buildCarStatus() {
+  Widget buildCarStatus(String oilType) {
     return Container(
       margin: EdgeInsets.only(bottom: 30),
       child: Text(
-        "차량 준비 중 | 휘발유",
+        "차량 준비 중 | $oilType",
         textAlign: TextAlign.center,
         style: TextStyle(color: ColorPalette.white, fontWeight: FontWeight.w500),
       ),
     );
   }
 
-  Widget buildDateTimeInfo() {
+  Widget buildDateTimeInfo(String Start_Time, String End_Time) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("내일 10:30 부터", style: TextStyle(color: ColorPalette.socarBlue)),
-          Text("8/30(월) 00:00", style: TextStyle(color: ColorPalette.socarBlue)),
+          Text("$Start_Time", style: TextStyle(color: ColorPalette.socarBlue)),
+          Text("$End_Time", style: TextStyle(color: ColorPalette.socarBlue)),
         ],
       ),
     );
@@ -111,14 +111,14 @@ Widget buildCarImage() {
 }
 
 
-  Widget buildRentTimeInfo() {
+  Widget buildRentTimeInfo(String StartTime) {
     return Container(
       margin: EdgeInsets.fromLTRB(7, 0, 7, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.watch_later, color: ColorPalette.gray200),
-          Text("  대여 시각 8/29 (일) 10:30", style: TextStyle(color: ColorPalette.gray200)),
+          Text("  대여 시각 $StartTime", style: TextStyle(color: ColorPalette.gray200)),
         ],
       ),
     );

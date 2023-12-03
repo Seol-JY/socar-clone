@@ -89,7 +89,6 @@ class _TermAgreementBoxState extends State<TermAgreementBoxWidget> {
             for (int i = 0; i < terms.length; i++) {
               terms[i].isChecked = !value;
             } 
-            print(widget.isAllTermChecked);
             checkbutton = !value;
             changeValue(widget.isAllTermChecked);
           });        

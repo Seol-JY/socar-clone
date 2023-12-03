@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socar/constants/color.dart';
 import 'package:socar/screens/payment_page/utils/text_style.dart';
 
 class InsuranceContainer extends StatefulWidget {
@@ -12,10 +13,10 @@ class InsuranceContainer extends StatefulWidget {
 class _InsuranceContainerState extends State<InsuranceContainer> {
   String? _selectedOption;
 
+
   void changeValue(String? value) {
     setState(() {
       _selectedOption = value;
-      print("insu value ; ${value}");
     });
     widget.onOptionSelected(value);
   }
@@ -51,9 +52,11 @@ class _InsuranceContainerState extends State<InsuranceContainer> {
 
   
   Widget _buildRadioOption(String title, String price, String value) {
-    return Container(
-      margin : const EdgeInsets.only(left : 10),
-      child: Row(
+  final bool isSelected = value == _selectedOption;
+
+  return Container(
+    margin: const EdgeInsets.only(left: 10),
+    child: Row(
       children: [
         Expanded(
           flex: 1,
@@ -63,10 +66,27 @@ class _InsuranceContainerState extends State<InsuranceContainer> {
             onChanged: changeValue,
           ),
         ),
-        Expanded(flex: 7, child: Text(title, style: subTextStyle())),
-        Expanded(flex: 2, child: Text(price, style: subTextStyle())),
+        Expanded(
+          flex: 7,
+          child: Text(
+            title,
+            style: isSelected
+                ? subTextStyle()
+                : subTextStyle().copyWith(color: _selectedOption == null ? Colors.black : ColorPalette.gray300),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            price,
+            style: isSelected
+                ? subTextStyle()
+                : subTextStyle().copyWith(color: _selectedOption == null ? Colors.black : ColorPalette.gray300),
+          ),
+        ),
       ],
     ),
-    );
-  }
+  );
+}
+
 }

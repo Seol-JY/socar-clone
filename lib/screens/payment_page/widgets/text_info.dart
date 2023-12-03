@@ -123,7 +123,7 @@ const DrivingFee({ Key? key , required this.drivingfee }) : super(key: key);
 class Finalprice extends StatelessWidget {
   final String rentalFee;
   final String insuranceFee;
-  const Finalprice({Key? key, required this.rentalFee, required this.insuranceFee}) : super(key: key);
+  const Finalprice({Key? key, required this.rentalFee, this.insuranceFee="0"}) : super(key: key);
 
   @override
   Widget build(BuildContext context){
@@ -140,7 +140,7 @@ class Finalprice extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("요금 합계", style:subTextStyle()),
-              Text("${(int.parse(rentalFee) + int.parse(insuranceFee)).toString()}원", style:subTextStyle()),
+              Text("${(int.parse(rentalFee) + (int.tryParse(insuranceFee) ?? 0)).toString()} 원", style:subTextStyle()),
             ],
           ),
           trailing: const Icon(Icons.expand_more),
@@ -161,7 +161,7 @@ class Finalprice extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("총 결제 금액", style: titleTextStyle().merge(TextStyle(color:ColorPalette.socarBlue))), 
-        Text("${(int.parse(rentalFee) + int.parse(insuranceFee)).toString()}  원",
+        Text("${(int.parse(rentalFee) + (int.tryParse(insuranceFee) ?? 0)).toString()} 원",
         style: titleTextStyle().merge(TextStyle(color:ColorPalette.socarBlue))),],),
       ],
     ),
