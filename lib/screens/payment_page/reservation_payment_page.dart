@@ -226,6 +226,7 @@ class _BottompaybarState extends State<Bottompaybar> {
   bool terms = false;
   bool isButtonActive = false;
   String? userPhoneNumber = "";
+  String endTimeInfo = "";
   DocumentReference? reservation_info;
   
   
@@ -239,6 +240,7 @@ class _BottompaybarState extends State<Bottompaybar> {
 
     userPhoneNumber = user?.phoneNumber;
   }
+final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   DocumentReference ref = firestore.collection('reservations').doc();
@@ -247,7 +249,7 @@ class _BottompaybarState extends State<Bottompaybar> {
 
   Timestamp startTimestamp = Timestamp.fromDate(startTimeUtc);
   Timestamp endTimestamp = Timestamp.fromDate(endTimeUtc);
-
+  endTimeInfo = formatter.format(endTimestamp.toDate());
   DocumentReference carRef = firestore.doc(widget.carReference);
   DocumentReference socarzoneRef = firestore.doc(widget.socarZone);
   DocumentReference userRef = firestore.doc('users/${userUid}');
@@ -290,8 +292,8 @@ class _BottompaybarState extends State<Bottompaybar> {
               Navigator.pushNamed(context,  '/completePayment',
                arguments: {
                 "license_number": widget.licenseNumber , 
-                "docRef": ""} );
-              SmsSendService.sendMessage("차량예약이 완료되었습니다.", userPhoneNumber);
+                "docRef": result} );
+              SmsSendService.sendMessage("차랑번호: [${widget.licenseNumber}], 차량예약이 완료되었습니다.\n반납시간 : [${endTimeInfo}]", userPhoneNumber);
             }
           : null,
       style: TextButton.styleFrom(

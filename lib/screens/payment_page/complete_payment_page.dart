@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
 import 'package:socar/screens/smart_key_page/reservation_confirm_page.dart';
 
-//Color(0xff00B8FF) 파랑
-//Color(0xff374553) 회
+
 
 class CompletePayment extends StatelessWidget {
   const CompletePayment({super.key});
 
   Widget buildDivider(Color dividerColor) {
     return Padding(
-      padding: const EdgeInsets.all(8.0), // 모든 방향에 8.0 픽셀의 마진을 줍니다.
+      padding: const EdgeInsets.all(8.0), 
       child: Divider(
         thickness: 4,
         height: 5,
@@ -77,6 +76,7 @@ class CompletePayment extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, "/reservationConfirm" ,
                     arguments:arguments);
+                    print(arguments);
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
