@@ -182,7 +182,7 @@ class ReservationCar extends StatelessWidget {
                                     child: Directionality(
                                       textDirection: TextDirection.rtl,
                                       child: ElevatedButton.icon(
-                                        onPressed: () {},
+                                        onPressed: () {Navigator.pushNamed(context, "/reservationConfirm", arguments: {"data": ""});},
                                         style: ElevatedButton.styleFrom(
                                           shape: const StadiumBorder(),
                                           elevation: 0,
