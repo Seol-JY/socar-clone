@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socar/screens/main_page/widgets/go_to_get_car.dart';
 import 'package:socar/screens/main_page/widgets/main_bar.dart';
@@ -11,6 +12,7 @@ class ReservationData {
   final DateTime reservationStartTime;
   final DateTime reservationEndTime;
   final String parkingLocation;
+  DocumentReference? docRef;
 
   ReservationData({
     required this.userName,
@@ -19,6 +21,7 @@ class ReservationData {
     required this.reservationStartTime,
     required this.reservationEndTime,
     required this.parkingLocation,
+    this.docRef,
   });
 }
 
