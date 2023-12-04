@@ -30,7 +30,7 @@ class Returnlocation extends StatelessWidget {
 
 class Usetime extends StatelessWidget {
   final String startTime, endTime;
-  const Usetime({Key? key, required this.startTime, required this.endTime}) : super(key: key);
+  Usetime({Key? key, required this.startTime, required this.endTime}) : super(key: key);
 
     @override
     Widget build(BuildContext context){

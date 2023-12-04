@@ -57,16 +57,34 @@ class _ReservationInfoState extends State<ReservationInfo> {
   String socarZoneReference = "";
   String socarZoneCarRefer = "";
   String carNumber = "";
+  String startTime = "";
+  String endTime= "";
+
   @override
   void initState() {
     super.initState();
     // initState에서 비동기로 Firestore 데이터 가져오기
-    fetchDataFromFirestore();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      print(arguments);
+      if (arguments != null && arguments["car_license"] == null) {
+        carNumber = arguments["car_license"];
+        startTime = arguments["start_time"];
+        endTime = arguments["end_time"];
+      } else {
+        carNumber = '236호2333';
+        startTime = "2023-12-02T14:30:00Z";
+        endTime = "2023-12-03T14:30:00Z";
+      }
+
+    fetchDataFromFirestore();});
   }
 
   Future<void> fetchDataFromFirestore() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
   
+  
+  //arguments["car_license"];
   // Nullable 타입으로 선언하고 null로 초기화합니다.
   String? carDocumentId;
 
@@ -82,8 +100,7 @@ class _ReservationInfoState extends State<ReservationInfo> {
     var data = carDoc.data() as Map<String, dynamic>; // 데이터를 Map<String, dynamic>으로 캐스팅
     if (data != null) { // 데이터가 null이 아닌지 확인
       var licenseNumber = data['license_number'];
-      if (licenseNumber == '236호2333') { // 특정 차 번호를 확인
-        carNumber = licenseNumber;
+      if (licenseNumber == carNumber) { // 특정 차 번호를 f확인
         //print('Found car document path: ${carDoc.reference.path}');
         socarZoneCarRefer = carDoc.reference.path;
         socarZoneReference = doc.reference.path;
@@ -165,9 +182,9 @@ class _ReservationInfoState extends State<ReservationInfo> {
               paddingDivider(),
               const Returnlocation(returnLocation: "주차장 정보"),
               paddingDivider(),
-              const Usetime(
-                  startTime: "2023-11-08T14:30:00Z",
-                  endTime: "2023-11-08T20:30:00Z"),
+              Usetime(
+                  startTime: startTime,
+                  endTime: endTime),
               paddingDivider(),
               InsuranceContainer(
                 onOptionSelected: (selected) {
@@ -201,7 +218,9 @@ class _ReservationInfoState extends State<ReservationInfo> {
         key: bottomBarKey, 
       socarZone: socarZoneReference,
       carReference:socarZoneCarRefer,
-      licenseNumber: carNumber,),
+      licenseNumber: carNumber,
+      StartTime : startTime,
+      EndTime : endTime),
     );
   }
 }
@@ -210,11 +229,15 @@ class Bottompaybar extends StatefulWidget {
   final String socarZone;
   final String carReference;
   final String licenseNumber;
+  final String StartTime;
+  final String EndTime;
   const Bottompaybar({
     Key? key,
     required this.carReference,
     required this.socarZone,
     required this.licenseNumber,
+    required this.StartTime,
+    required this.EndTime,
   }) : super(key: key);
 
   @override
@@ -240,12 +263,12 @@ class _BottompaybarState extends State<Bottompaybar> {
 
     userPhoneNumber = user?.phoneNumber;
   }
-final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+  final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   DocumentReference ref = firestore.collection('reservations').doc();
-  DateTime startTimeUtc = DateTime.parse("2023-12-02T14:30:00Z");
-  DateTime endTimeUtc = DateTime.parse("2023-12-13T20:30:00Z");
+  DateTime startTimeUtc = DateTime.parse(widget.StartTime);
+  DateTime endTimeUtc = DateTime.parse(widget.EndTime);
 
   Timestamp startTimestamp = Timestamp.fromDate(startTimeUtc);
   Timestamp endTimestamp = Timestamp.fromDate(endTimeUtc);
