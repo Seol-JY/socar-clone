@@ -70,4 +70,8 @@ class UserAuthenticateService {
 
     return code;
   }
+
+  void logout() {
+    _auth.signOut();
+  }
 }
