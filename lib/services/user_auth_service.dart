@@ -2,9 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socar/services/sms_send.dart';
 import 'dart:math';
 
+import 'package:socar/utils/user_input_validator.dart';
+
 class UserAuthenticateService {
   static String? _currentCode;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static bool checkLoginStatus() {
+    var user = _auth.currentUser;
+    if (user != null) {
+      // 사용자가 로그인되어 있음
+      return true;
+    }
+    // 사용자가 로그인되어 있지 않음
+    return false;
+  }
 
   void sendVerifyCode(String phoneNumber) async {
     UserAuthenticateService._currentCode = _createNewCode();
@@ -18,6 +30,10 @@ class UserAuthenticateService {
 
   Future<UserCredential> doRegister(
       String emailAddress, String password) async {
+    if (!UserInputValidator.validPasswordFormat(password)) {
+      throw FirebaseAuthException(code: 'weak-password');
+    }
+
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -42,15 +58,10 @@ class UserAuthenticateService {
     try {
       await _auth.signInWithEmailAndPassword(
           email: emailAddress, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return false;
-      } else if (e.code == 'wrong-password') {
-        return false;
-      }
+      return true;
+    } on FirebaseAuthException {
+      return false;
     }
-
-    return true;
   }
 
   String _createNewCode() {
@@ -58,5 +69,9 @@ class UserAuthenticateService {
     String code = random.nextInt(1000000).toString().padLeft(6, "0");
 
     return code;
+  }
+
+  void logout() {
+    _auth.signOut();
   }
 }

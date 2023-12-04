@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socar/models/user.dart';
 import 'package:socar/services/user_auth_service.dart';
 import 'package:socar/services/user_service.dart';
+import 'package:socar/utils/snackbar_utils.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/screens/register_input_page/widgets/title_textform.dart';
 import 'package:socar/utils/user_input_validator.dart';
@@ -125,7 +126,15 @@ class _RegisterInputState extends State<RegisterInputPage> {
                       phoneNumber: args.phoneNumber,
                       username: args.username,
                     )))
-                .then((value) => showSuccessModal());
+                .then((value) => showSuccessModal())
+                .catchError((e) => {
+                      SnackbarUtils.showTopSnackBar(
+                          context,
+                          Text(
+                            e.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          ))
+                    });
           },
           child: SizedBox(
             height: kToolbarHeight,

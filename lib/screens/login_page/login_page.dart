@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socar/services/user_auth_service.dart';
+import 'package:socar/utils/snackbar_utils.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/utils/user_input_validator.dart';
 
@@ -38,7 +39,18 @@ class LoginState extends State<LoginPage> {
   void doAuthenticate() {
     authenticateService
         .doLogin(_emailController.text, _pwController.text)
-        .then((value) => {Navigator.pushNamed(context, '/main')});
+        .then((value) => {
+              if (value)
+                {Navigator.pushNamed(context, '/main')}
+              else
+                {
+                  SnackbarUtils.showTopSnackBar(
+                    context,
+                    const Text('이메일 혹은 비밀번호가 잘못되었습니다.',
+                        style: TextStyle(color: Colors.white)),
+                  )
+                }
+            });
   }
 
   @override
