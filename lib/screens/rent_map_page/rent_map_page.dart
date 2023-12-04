@@ -205,7 +205,7 @@ class _RentMapPageState extends State<RentMapPage>
         ),
       ),
       child: Scaffold(
-        endDrawer: const NavDrawer(),
+        endDrawer: NavDrawer(),
         appBar: RentAppBar(),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 55),

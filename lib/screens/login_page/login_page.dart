@@ -41,7 +41,10 @@ class LoginState extends State<LoginPage> {
         .doLogin(_emailController.text, _pwController.text)
         .then((value) => {
               if (value)
-                {Navigator.pushNamed(context, '/main')}
+                {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/main', (route) => false)
+                }
               else
                 {
                   SnackbarUtils.showTopSnackBar(
