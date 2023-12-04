@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socar/services/sms_send.dart';
 import 'dart:math';
 
+import 'package:socar/utils/user_input_validator.dart';
+
 class UserAuthenticateService {
   static String? _currentCode;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,6 +30,10 @@ class UserAuthenticateService {
 
   Future<UserCredential> doRegister(
       String emailAddress, String password) async {
+    if (!UserInputValidator.validPasswordFormat(password)) {
+      throw FirebaseAuthException(code: 'weak-password');
+    }
+
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(

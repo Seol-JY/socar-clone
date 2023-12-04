@@ -4,6 +4,7 @@ import 'package:socar/screens/register_auth_page/utils/timerUtil.dart';
 import 'package:socar/screens/register_auth_page/widgets/verify_code_input.dart';
 import 'package:socar/screens/register_input_page/register_input_page.dart';
 import 'package:socar/services/user_auth_service.dart';
+import 'package:socar/utils/snackbar_utils.dart';
 import 'package:socar/widgets/app_bar.dart';
 import 'package:socar/widgets/term_agreement.dart';
 import 'package:socar/screens/register_auth_page/widgets/dropdown_text_field_in_row.dart';
@@ -198,20 +199,7 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
       bottomNavigationBar: Material(
         color: bottomButtonColor,
         child: InkWell(
-          onTap: () {
-            if (!isAuthCodeEntered()) {
-              return;
-            }
-
-            if (!widget.userAuthService
-                .isAuthenticateSucceed(authCodeController.text)) {
-              return;
-            }
-            Navigator.pushNamed(context, "/register/input",
-                arguments: InputPageArguments(
-                    username: usernameController.text,
-                    phoneNumber: phoneNumberController.text));
-          },
+          onTap: doAuthenticate,
           child: SizedBox(
             height: kToolbarHeight,
             width: double.infinity,
@@ -225,6 +213,29 @@ class RegisterAuthPageState extends State<RegisterAuthPage> {
         ),
       ),
     );
+  }
+
+  doAuthenticate() {
+    if (!isAuthCodeEntered()) {
+      return;
+    }
+
+    if (!widget.userAuthService
+        .isAuthenticateSucceed(authCodeController.text)) {
+      SnackbarUtils.showTopSnackBar(
+          context,
+          const Text(
+            "인증번호가 잘못되었습니다.",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ));
+      return;
+    }
+    Navigator.pushNamed(context, "/register/input",
+        arguments: InputPageArguments(
+            username: usernameController.text,
+            phoneNumber: phoneNumberController.text));
   }
 
   bool isReadyToSendVerifyCode() {
