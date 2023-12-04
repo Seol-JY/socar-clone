@@ -45,7 +45,7 @@ class _MainPageState extends State<MainPage> {
         scaffoldBackgroundColor: const Color(0xfff2f4f6),
       ),
       child: Scaffold(
-          endDrawer: const NavDrawer(),
+          endDrawer: NavDrawer(),
           appBar: MainBar(),
           body: Stack(children: [
             const Padding(
