@@ -44,25 +44,30 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   Future<List<ReservationData>> fetchReservationDataBySocarZone(
       SocarZone socarZone) async {
     try {
-      Timestamp now = Timestamp.now();
+      DateTime setStartTime = timeRange.start;
+      DateTime setEndTime = timeRange.end;
       // Firebase에서 데이터 가져오기
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       CollectionReference collectionReference =
           firestore.collection('socar_zone');
       DocumentReference socarZoneData = collectionReference.doc(socarZone.id);
 
-      QuerySnapshot querySnapshot = await _firestore
-          .collection('reservations')
-          .where('end_time', isGreaterThan: now)
-          .get();
+      QuerySnapshot querySnapshot =
+          await _firestore.collection('reservations').get();
 
       // 비동기 작업을 병렬로 수행하기 위해 Future.wait 사용
       List<Future<ReservationData>> futures = querySnapshot.docs.where((doc) {
         Timestamp startTime = doc['start_time'];
+        Timestamp endTime = doc['end_time'];
 
         DateTime startDateTime = startTime.toDate();
+        DateTime endDateTime = endTime.toDate();
 
-        return startDateTime.isBefore(now.toDate());
+        if (setStartTime.isBefore(startDateTime)) {
+          return setEndTime.isAfter(endDateTime);
+        } else {
+          return setStartTime.isBefore(endDateTime);
+        }
       }).map((DocumentSnapshot document) async {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
 
