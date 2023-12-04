@@ -132,6 +132,11 @@ class _ReservationInfoState extends State<ReservationInfo> {
   @override
   Widget build(BuildContext context) {
     //print("socarzone : $socarZoneReference, carrefer : $socarZoneCarRefer");
+    if (carNumber.isEmpty) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -220,7 +225,7 @@ class _BottompaybarState extends State<Bottompaybar> {
   String insPrice = "0";
   bool terms = false;
   bool isButtonActive = false;
-  String userPhoneNumber = "";
+  String? userPhoneNumber = "";
   DocumentReference? reservation_info;
   
   
@@ -232,7 +237,7 @@ class _BottompaybarState extends State<Bottompaybar> {
   if (userUid != null) {
     User? user = await userService.findByUid(userUid);
 
-    String? userPhoneNumber = user?.phoneNumber;
+    userPhoneNumber = user?.phoneNumber;
   }
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -281,11 +286,12 @@ class _BottompaybarState extends State<Bottompaybar> {
       onPressed: isButtonActive
           ? () async {
               DocumentReference? result = await saveDateToFirestore();
+              print(userPhoneNumber);
               Navigator.pushNamed(context,  '/completePayment',
                arguments: {
                 "license_number": widget.licenseNumber , 
-                "docRef": result} );
-              //SmsSendService.sendMessage("차량예약이 완료되었습니다.", userPhoneNumber);
+                "docRef": ""} );
+              SmsSendService.sendMessage("차량예약이 완료되었습니다.", userPhoneNumber);
             }
           : null,
       style: TextButton.styleFrom(
