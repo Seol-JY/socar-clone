@@ -17,16 +17,15 @@ class CarListView extends StatelessWidget {
   final bool isChanged;
   final void Function(DateTimeRange newTimeRange) updateTimeRange;
   final void Function(String markerId) setMarkerId;
-  const CarListView({
-    required this.socarZoneId,
-    required this.carList,
-    required this.reservationList,
-    required this.timeRange,
-    required this.isChanged,
-    required this.updateTimeRange,
-    required this.reservationNumber,
-    required this.setMarkerId
-  });
+  const CarListView(
+      {required this.socarZoneId,
+      required this.carList,
+      required this.reservationList,
+      required this.timeRange,
+      required this.isChanged,
+      required this.updateTimeRange,
+      required this.reservationNumber,
+      required this.setMarkerId});
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,8 @@ class CarListView extends StatelessWidget {
             if (reservationList.contains(carData.imageUrl))
               Positioned.fill(
                 child: Container(
-                  color: Colors.grey.withOpacity(0.5), // 투명도 조절
+                  color: Color.fromARGB(255, 255, 255, 255)
+                      .withOpacity(0.7), // 투명도 조절
                 ),
               ),
             if (reservationList.contains(carData.imageUrl))
@@ -124,11 +124,12 @@ class CarListView extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
-                          width: 160,
-                          color: ColorPalette.white,
+                          width: 150,
+                          padding: EdgeInsets.all(0),
+                          color: ColorPalette.gray600.withOpacity(0.6),
                           child: IconRowWidget(
                             icon: Icons.access_alarm,
-                            text: "예약시간 변경",
+                            text: "시간 조정하기",
                           ),
                         ),
                       )),
