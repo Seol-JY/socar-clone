@@ -52,15 +52,10 @@ class UserAuthenticateService {
     try {
       await _auth.signInWithEmailAndPassword(
           email: emailAddress, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return false;
-      } else if (e.code == 'wrong-password') {
-        return false;
-      }
+      return true;
+    } on FirebaseAuthException {
+      return false;
     }
-
-    return true;
   }
 
   String _createNewCode() {
