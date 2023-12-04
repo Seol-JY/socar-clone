@@ -6,6 +6,16 @@ class UserAuthenticateService {
   static String? _currentCode;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  static bool checkLoginStatus() {
+    var user = _auth.currentUser;
+    if (user != null) {
+      // 사용자가 로그인되어 있음
+      return true;
+    }
+    // 사용자가 로그인되어 있지 않음
+    return false;
+  }
+
   void sendVerifyCode(String phoneNumber) async {
     UserAuthenticateService._currentCode = _createNewCode();
     SmsSendService.sendMessage(
