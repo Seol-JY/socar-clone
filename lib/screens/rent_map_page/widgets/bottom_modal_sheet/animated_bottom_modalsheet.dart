@@ -41,16 +41,30 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   final bool isChanged;
   final void Function(DateTimeRange newTimeRange) updateTimeRange;
 
+  Future<List<String>> fetchCarNumberBySocarZone(SocarZone socarZone) async {
+    try {
+      CollectionReference collectionReference =
+          _firestore.collection('socar_zone');
+      DocumentReference socarZoneData = collectionReference.doc(socarZone.id);
+      CollectionReference carsQuery = socarZoneData.collection("cars");
+
+      QuerySnapshot carNumberSnapshot = await carsQuery.get();
+      List<String> usernames = carNumberSnapshot.docs
+          .map((doc) => doc['license_number'].toString())
+          .toList();
+
+      return usernames;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   Future<List<ReservationData>> fetchReservationDataBySocarZone(
       SocarZone socarZone) async {
     try {
       DateTime setStartTime = timeRange.start;
       DateTime setEndTime = timeRange.end;
-      // Firebase에서 데이터 가져오기
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      CollectionReference collectionReference =
-          firestore.collection('socar_zone');
-      DocumentReference socarZoneData = collectionReference.doc(socarZone.id);
 
       QuerySnapshot querySnapshot =
           await _firestore.collection('reservations').get();
@@ -101,7 +115,6 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int foldState = getFoldState();
-    List<String> reservationList = [];
 
     return AnimatedContainer(
       curve: Curves.easeInBack,
@@ -140,7 +153,8 @@ class AnimatedBottomModalSheet extends StatelessWidget {
           FutureBuilder(
             future: Future.wait([
               getCarDataBySocarZoneId(socarZone.id),
-              fetchReservationDataBySocarZone(socarZone)
+              fetchReservationDataBySocarZone(socarZone),
+              fetchCarNumberBySocarZone(socarZone)
             ]),
             // 비동기 함수를 호출하여 Future를 얻습니다.
             builder: (context, snapshot) {
@@ -154,14 +168,17 @@ class AnimatedBottomModalSheet extends StatelessWidget {
                 List<CarData> carDataList = data[0] ?? [];
                 List<ReservationData> carReservation = data[1] ?? [];
                 List<String> imgUrls = [];
+                List<String> carNumbers = data[2] ?? [];
 
                 for (ReservationData data in carReservation) {
                   imgUrls.add(data.carImageURL);
+                  carNumbers.add(data.carNumber);
                 }
 
                 return CarListView(
                     carList: carDataList,
                     reservationList: imgUrls,
+                    reservationNumber: carNumbers,
                     timeRange: timeRange,
                     isChanged: isChanged,
                     updateTimeRange: updateTimeRange);

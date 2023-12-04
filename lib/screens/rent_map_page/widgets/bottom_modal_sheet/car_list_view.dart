@@ -11,16 +11,19 @@ import 'package:socar/screens/rent_map_page/widgets/time_select_modal_utils.dart
 class CarListView extends StatelessWidget {
   final List<CarData> carList;
   final List<String> reservationList;
+  final List<String> reservationNumber;
   final DateTimeRange timeRange;
   final bool isChanged;
   final void Function(DateTimeRange newTimeRange) updateTimeRange;
 
-  const CarListView(
-      {required this.carList,
-      required this.reservationList,
-      required this.timeRange,
-      required this.isChanged,
-      required this.updateTimeRange});
+  const CarListView({
+    required this.carList,
+    required this.reservationList,
+    required this.timeRange,
+    required this.isChanged,
+    required this.updateTimeRange,
+    required this.reservationNumber,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +83,13 @@ class CarListView extends StatelessWidget {
                       Spacer(),
                       IconButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, "/reservationPayment");
+                            Map<String, dynamic> arg = {
+                              "car_license": reservationNumber[index],
+                              "start_time": timeRange.start.toString(),
+                              "end_time": timeRange.end.toString(),
+                            };
+                            Navigator.pushNamed(context, "/reservationPayment",
+                                arguments: arg);
                           },
                           icon: Icon(Icons.next_plan))
                     ],
