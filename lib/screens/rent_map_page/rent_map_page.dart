@@ -93,7 +93,7 @@ class _RentMapPageState extends State<RentMapPage>
     focusMarkerPosition(markerId);
 
     if (_markerId != "") {
-      showModalBottomSheet<void>(
+      showModalBottomSheet(
         barrierColor: const Color.fromARGB(8, 0, 0, 0),
         context: context,
         useSafeArea: true,
@@ -114,13 +114,16 @@ class _RentMapPageState extends State<RentMapPage>
                   timeRange: timeRange,
                   isChanged: isChanged,
                   updateTimeRange: updateTimeRange,
+                  setMarkerId: _setMarkerId,
                   socarZone: socarZones
                       .firstWhere((socarZone) => socarZone.id == markerId));
             },
           );
         },
       ).then((value) {
-        _setMarkerId("");
+        if (value != "Closed with TimeChange") {
+          _setMarkerId("");
+        }
       });
     } else {
       foldState = FoldState.None as int;

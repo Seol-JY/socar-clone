@@ -10,6 +10,8 @@ class TimeSelectModalUtils {
     DateTimeRange timeRange,
     bool isChanged,
     void Function(DateTimeRange newTimeRange) updateTimeRange,
+    void Function(String markerId)? setMarkerId,
+    String? socarZoneId,
   ) {
     showModalBottomSheet(
       context: context,
@@ -25,7 +27,12 @@ class TimeSelectModalUtils {
           },
         );
       },
-    );
+    ).then((value) {
+      if (setMarkerId != null && socarZoneId != null) {
+        Navigator.pop(context, 'Closed with TimeChange');
+        setMarkerId(socarZoneId);
+      }
+    });
   }
 }
 

@@ -27,6 +27,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
     required this.timeRange,
     required this.isChanged,
     required this.updateTimeRange,
+    required this.setMarkerId,
   }) : super(key: key);
 
   final void Function(bool) fold;
@@ -40,6 +41,7 @@ class AnimatedBottomModalSheet extends StatelessWidget {
   final DateTimeRange timeRange;
   final bool isChanged;
   final void Function(DateTimeRange newTimeRange) updateTimeRange;
+  final void Function(String markerId) setMarkerId;
 
   Future<List<String>> fetchCarNumberBySocarZone(SocarZone socarZone) async {
     try {
@@ -176,6 +178,8 @@ class AnimatedBottomModalSheet extends StatelessWidget {
                 }
 
                 return CarListView(
+                    socarZoneId: socarZone.id,
+                    setMarkerId: setMarkerId,
                     carList: carDataList,
                     reservationList: imgUrls,
                     reservationNumber: carNumbers,
