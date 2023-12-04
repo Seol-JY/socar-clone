@@ -25,7 +25,7 @@ Widget buildCarImage(String url) {
     return Container(
       margin: EdgeInsets.only(bottom: 30),
       child: Text(
-        "차량 준비 중 | $oilType",
+        "차량 예약 중 | $oilType",
         textAlign: TextAlign.center,
         style: TextStyle(color: ColorPalette.white, fontWeight: FontWeight.w500),
       ),
@@ -75,8 +75,8 @@ Widget buildCarImage(String url) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("대여장소", style: TextStyle(color: ColorPalette.white)),
-          Text("         위치", style: TextStyle(color: ColorPalette.white)),
+          Text("대여장소      ", style: TextStyle(color: ColorPalette.white)),
+          Text(title2, style: TextStyle(color: ColorPalette.white)),
         ],
       ),
     );

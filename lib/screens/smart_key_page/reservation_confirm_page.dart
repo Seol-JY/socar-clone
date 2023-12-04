@@ -20,6 +20,7 @@ Map<String, dynamic> reservationData = {};
 DocumentReference<Map<String, dynamic>>? reservationInfo;
 
 class _ReservationConfirmState extends State<ReservationConfirm> {
+  String returnPlace = "";
   @override
   void initState() {
     super.initState();
@@ -99,7 +100,14 @@ class _ReservationConfirmState extends State<ReservationConfirm> {
             var licenseNumber = data['license_number'];
             if (licenseNumber == getlicenseNumber) {
               // 특정 차 번호를 확인
-
+              docRef.get().then((DocumentSnapshot docSnapshot) {
+                  if (docSnapshot.exists) {
+                      // Access and print the 'name' field from the document
+                      returnPlace = docSnapshot.get('name');
+                  } else {
+                      print('Document does not exist in the database');
+                  }
+              });
               DocumentReference carRef = data['car'] as DocumentReference;
               DocumentSnapshot carSnapshot = await carRef.get();
 
@@ -159,7 +167,7 @@ class _ReservationConfirmState extends State<ReservationConfirm> {
                   reservationData["end_time"])),
           buildDivider(ColorPalette.socarBlue),
           buildReservationStatus(),
-          buildLocationInfo("대여장소", "위치"),
+          buildLocationInfo("대여장소", returnPlace),
           buildInfoRow("챠량확인", "이용안내보기",
               "https://socar-docs.zendesk.com/hc/ko/articles/360048397194"),
           buildInfoRow("쏘카 이용방법이 궁금하다면?", "", "https://www.socar.kr/guide"),

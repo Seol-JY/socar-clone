@@ -54,6 +54,7 @@ class _ReservationInfoState extends State<ReservationInfo> {
   int driveFee = 0;
   int rentFee = 0;
   String imageUrl = "";
+  String returnPlace = "";
   String socarZoneReference = "";
   String socarZoneCarRefer = "";
   String carNumber = "";
@@ -66,7 +67,7 @@ class _ReservationInfoState extends State<ReservationInfo> {
     // initState에서 비동기로 Firestore 데이터 가져오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final arguments =
-          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
       print(arguments);
       if (arguments != null) {
         carNumber = arguments["car_license"];
@@ -105,8 +106,15 @@ class _ReservationInfoState extends State<ReservationInfo> {
             // 데이터가 null이 아닌지 확인
             var licenseNumber = data['license_number'];
             if (licenseNumber == carNumber) {
-              // 특정 차 번호를 f확인
               //print('Found car document path: ${carDoc.reference.path}');
+              docRef.get().then((DocumentSnapshot docSnapshot) {
+                  if (docSnapshot.exists) {
+                      // Access and print the 'name' field from the document
+                      returnPlace = docSnapshot.get('name');
+                  } else {
+                      //print('Document does not exist in the database');
+                  }
+              });
               socarZoneCarRefer = carDoc.reference.path;
               socarZoneReference = doc.reference.path;
 
@@ -179,7 +187,7 @@ class _ReservationInfoState extends State<ReservationInfo> {
               paddingDivider(),
               DrivingFee(drivingfee: driveFee.toString()),
               paddingDivider(),
-              const Returnlocation(returnLocation: "주차장 정보"),
+              Returnlocation(returnLocation: returnPlace),
               paddingDivider(),
               Usetime(startTime: startTime, endTime: endTime),
               paddingDivider(),
