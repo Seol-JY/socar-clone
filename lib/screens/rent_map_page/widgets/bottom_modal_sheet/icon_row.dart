@@ -13,10 +13,18 @@ class IconRowWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: ColorPalette.gray400),
-          const PaddingBox(width: 10, height: 0), // 간격을 조절하기 위한 SizedBox 추가
-          Text(text)
+          Icon(icon, color: const Color.fromARGB(255, 255, 255, 255), size: 16),
+          const PaddingBox(width: 4, height: 0), // 간격을 조절하기 위한 SizedBox 추가
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 14.0,
+              fontWeight: FontWeight.w300,
+              color: const Color.fromARGB(255, 255, 255, 255),
+            ),
+          ),
         ],
       ),
     );
