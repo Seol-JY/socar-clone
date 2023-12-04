@@ -58,16 +58,17 @@ class _ReservationInfoState extends State<ReservationInfo> {
   String socarZoneCarRefer = "";
   String carNumber = "";
   String startTime = "";
-  String endTime= "";
+  String endTime = "";
 
   @override
   void initState() {
     super.initState();
     // initState에서 비동기로 Firestore 데이터 가져오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final arguments =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       print(arguments);
-      if (arguments != null && arguments["car_license"] == null) {
+      if (arguments != null) {
         carNumber = arguments["car_license"];
         startTime = arguments["start_time"];
         endTime = arguments["end_time"];
@@ -77,66 +78,68 @@ class _ReservationInfoState extends State<ReservationInfo> {
         endTime = "2023-12-03T14:30:00Z";
       }
 
-    fetchDataFromFirestore();});
+      fetchDataFromFirestore();
+    });
   }
 
   Future<void> fetchDataFromFirestore() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-  
-  
-  //arguments["car_license"];
-  // Nullable 타입으로 선언하고 null로 초기화합니다.
-  String? carDocumentId;
 
-  try {
-    // 'socar_zone' 컬렉션에서 차량 정보를 가져옵니다.
-   QuerySnapshot socarZoneSnapshot = await firestore.collection('socar_zone').get();
-  
-  for (var doc in socarZoneSnapshot.docs) {
-    DocumentReference docRef = doc.reference;
-    QuerySnapshot carsSnapshot = await docRef.collection('cars').get();
+    //arguments["car_license"];
+    // Nullable 타입으로 선언하고 null로 초기화합니다.
+    String? carDocumentId;
 
-    for (var carDoc in carsSnapshot.docs) {
-    var data = carDoc.data() as Map<String, dynamic>; // 데이터를 Map<String, dynamic>으로 캐스팅
-    if (data != null) { // 데이터가 null이 아닌지 확인
-      var licenseNumber = data['license_number'];
-      if (licenseNumber == carNumber) { // 특정 차 번호를 f확인
-        //print('Found car document path: ${carDoc.reference.path}');
-        socarZoneCarRefer = carDoc.reference.path;
-        socarZoneReference = doc.reference.path;
+    try {
+      // 'socar_zone' 컬렉션에서 차량 정보를 가져옵니다.
+      QuerySnapshot socarZoneSnapshot =
+          await firestore.collection('socar_zone').get();
 
-        DocumentReference carRef = data['car'] as DocumentReference;
+      for (var doc in socarZoneSnapshot.docs) {
+        DocumentReference docRef = doc.reference;
+        QuerySnapshot carsSnapshot = await docRef.collection('cars').get();
 
-        DocumentSnapshot carSnapshot = await carRef.get();
+        for (var carDoc in carsSnapshot.docs) {
+          var data = carDoc.data()
+              as Map<String, dynamic>; // 데이터를 Map<String, dynamic>으로 캐스팅
+          if (data != null) {
+            // 데이터가 null이 아닌지 확인
+            var licenseNumber = data['license_number'];
+            if (licenseNumber == carNumber) {
+              // 특정 차 번호를 f확인
+              //print('Found car document path: ${carDoc.reference.path}');
+              socarZoneCarRefer = carDoc.reference.path;
+              socarZoneReference = doc.reference.path;
 
-      if (carSnapshot.exists) {
-        setState(() {
-          var carData = carSnapshot.data() as Map<String, dynamic>;
-        
-        // 필요한 정보를 출력합니다.
-        carName = carData["name"];
-        //print("Car Name: $carName");
-        oilType = carData["oil_type"];
-        //print("Oil Type: $oilType");
-        driveFee = carData["drive_km_fee"];
-        //print("Drive Fee: $driveFee");
-        imageUrl = carData["url"];
-        //print("Image URL: $imageUrl");
-        rentFee = carData["rent_fee"];
-        //print("Rent Fee: $rentFee");
-        });
-        
-      } else {
-        print('Car document does not exist.');
+              DocumentReference carRef = data['car'] as DocumentReference;
+
+              DocumentSnapshot carSnapshot = await carRef.get();
+
+              if (carSnapshot.exists) {
+                setState(() {
+                  var carData = carSnapshot.data() as Map<String, dynamic>;
+
+                  // 필요한 정보를 출력합니다.
+                  carName = carData["name"];
+                  //print("Car Name: $carName");
+                  oilType = carData["oil_type"];
+                  //print("Oil Type: $oilType");
+                  driveFee = carData["drive_km_fee"];
+                  //print("Drive Fee: $driveFee");
+                  imageUrl = carData["url"];
+                  //print("Image URL: $imageUrl");
+                  rentFee = carData["rent_fee"];
+                  //print("Rent Fee: $rentFee");
+                });
+              } else {
+                print('Car document does not exist.');
+              }
+            }
+          }
+        }
       }
+    } catch (error) {
+      //print("Error fetching data: $error");
     }
-  }
-}
-
-  }
-  } catch (error) {
-    //print("Error fetching data: $error");
-  }
   }
 
   void updateBottomBarState() {
@@ -172,19 +175,13 @@ class _ReservationInfoState extends State<ReservationInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CarInfo(
-                  carimage:
-                      imageUrl,
-                  carname: carName,
-                  oiltype: oilType),
+              CarInfo(carimage: imageUrl, carname: carName, oiltype: oilType),
               paddingDivider(),
               DrivingFee(drivingfee: driveFee.toString()),
               paddingDivider(),
               const Returnlocation(returnLocation: "주차장 정보"),
               paddingDivider(),
-              Usetime(
-                  startTime: startTime,
-                  endTime: endTime),
+              Usetime(startTime: startTime, endTime: endTime),
               paddingDivider(),
               InsuranceContainer(
                 onOptionSelected: (selected) {
@@ -215,12 +212,12 @@ class _ReservationInfoState extends State<ReservationInfo> {
         ),
       ),
       bottomNavigationBar: Bottompaybar(
-        key: bottomBarKey, 
-      socarZone: socarZoneReference,
-      carReference:socarZoneCarRefer,
-      licenseNumber: carNumber,
-      StartTime : startTime,
-      EndTime : endTime),
+          key: bottomBarKey,
+          socarZone: socarZoneReference,
+          carReference: socarZoneCarRefer,
+          licenseNumber: carNumber,
+          StartTime: startTime,
+          EndTime: endTime),
     );
   }
 }
@@ -251,53 +248,50 @@ class _BottompaybarState extends State<Bottompaybar> {
   String? userPhoneNumber = "";
   String endTimeInfo = "";
   DocumentReference? reservation_info;
-  
-  
+
   Future<DocumentReference<Object?>> saveDateToFirestore() async {
-  fireAuth.FirebaseAuth auth = fireAuth.FirebaseAuth.instance;
-  String? userUid = auth.currentUser?.uid;
-  UserService userService = UserService();
+    fireAuth.FirebaseAuth auth = fireAuth.FirebaseAuth.instance;
+    String? userUid = auth.currentUser?.uid;
+    UserService userService = UserService();
 
-  if (userUid != null) {
-    User? user = await userService.findByUid(userUid);
+    if (userUid != null) {
+      User? user = await userService.findByUid(userUid);
 
-    userPhoneNumber = user?.phoneNumber;
+      userPhoneNumber = user?.phoneNumber;
+    }
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference ref = firestore.collection('reservations').doc();
+    DateTime startTimeUtc = DateTime.parse(widget.StartTime);
+    DateTime endTimeUtc = DateTime.parse(widget.EndTime);
+
+    Timestamp startTimestamp = Timestamp.fromDate(startTimeUtc);
+    Timestamp endTimestamp = Timestamp.fromDate(endTimeUtc);
+    endTimeInfo = formatter.format(endTimestamp.toDate());
+    DocumentReference carRef = firestore.doc(widget.carReference);
+    DocumentReference socarzoneRef = firestore.doc(widget.socarZone);
+    DocumentReference userRef = firestore.doc('users/${userUid}');
+
+    try {
+      await ref.set({
+        'start_time': startTimestamp,
+        'end_time': endTimestamp,
+        'reserved_car': carRef,
+        'socar_zone': socarzoneRef,
+        'total_price': 23490,
+        'user': userRef,
+      });
+
+      // 'set' 메서드가 완료되었을 때 실행되는 코드
+      return ref;
+    } catch (error) {
+      // 오류가 발생했을 때 처리하는 코드
+      print("Error setting document: $error");
+      // return null 또는 다른 fallback 값 (예: throw Exception('Error setting document');)
+      return Future.value(null);
+    }
   }
-  final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
-
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  DocumentReference ref = firestore.collection('reservations').doc();
-  DateTime startTimeUtc = DateTime.parse(widget.StartTime);
-  DateTime endTimeUtc = DateTime.parse(widget.EndTime);
-
-  Timestamp startTimestamp = Timestamp.fromDate(startTimeUtc);
-  Timestamp endTimestamp = Timestamp.fromDate(endTimeUtc);
-  endTimeInfo = formatter.format(endTimestamp.toDate());
-  DocumentReference carRef = firestore.doc(widget.carReference);
-  DocumentReference socarzoneRef = firestore.doc(widget.socarZone);
-  DocumentReference userRef = firestore.doc('users/${userUid}');
-  
-  try {
-    await ref.set({
-      'start_time': startTimestamp,
-      'end_time': endTimestamp,
-      'reserved_car': carRef,
-      'socar_zone': socarzoneRef,
-      'total_price': 23490,
-      'user': userRef,
-    });
-
-    // 'set' 메서드가 완료되었을 때 실행되는 코드
-    return ref;
-  } catch (error) {
-    // 오류가 발생했을 때 처리하는 코드
-    print("Error setting document: $error");
-    // return null 또는 다른 fallback 값 (예: throw Exception('Error setting document');)
-    return Future.value(null);
-  }
-}
-    
-  
 
   void updateButtonState(bool isActive) {
     setState(() {
@@ -312,11 +306,13 @@ class _BottompaybarState extends State<Bottompaybar> {
           ? () async {
               DocumentReference? result = await saveDateToFirestore();
               print(userPhoneNumber);
-              Navigator.pushNamed(context,  '/completePayment',
-               arguments: {
-                "license_number": widget.licenseNumber , 
-                "docRef": result} );
-              SmsSendService.sendMessage("차랑번호: [${widget.licenseNumber}], 차량예약이 완료되었습니다.\n반납시간 : [${endTimeInfo}]", userPhoneNumber);
+              Navigator.pushNamed(context, '/completePayment', arguments: {
+                "license_number": widget.licenseNumber,
+                "docRef": result
+              });
+              SmsSendService.sendMessage(
+                  "차랑번호: [${widget.licenseNumber}], 차량예약이 완료되었습니다.\n반납시간 : [${endTimeInfo}]",
+                  userPhoneNumber);
             }
           : null,
       style: TextButton.styleFrom(
