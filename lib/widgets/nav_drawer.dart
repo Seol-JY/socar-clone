@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-// User 객체 겹침
 import 'package:flutter/material.dart';
 import 'package:socar/constants/colors.dart';
+import 'package:socar/services/user_auth_service.dart';
 import 'package:socar/services/user_service.dart';
 import 'package:socar/models/user.dart';
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({Key? key});
+  UserAuthenticateService userAuthenticateService = UserAuthenticateService();
+  NavDrawer({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,10 @@ class NavDrawer extends StatelessWidget {
       future: userService.findByUid(userUid ?? ""),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // 데이터가 로딩 중일 때 표시할 UI
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          // 에러가 발생했을 때 표시할 UI
           return Text('에러 발생: ${snapshot.error}');
         } else {
-          // 데이터를 성공적으로 가져왔을 때의 UI
           User? userData = snapshot.data;
           String userName = userData?.username ?? "사용자 이름 없음";
           String userEmail = userData?.email ?? "사용자 이메일 없음";
@@ -51,15 +49,33 @@ class NavDrawer extends StatelessWidget {
                     ),
                     onDetailsPressed: () {},
                     decoration: const BoxDecoration(
-                        color: ColorPalette.white,
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            width: 1,
-                          ),
-                        )),
+                      color: ColorPalette.white,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          width: 1,
+                        ),
+                      ),
+                    ),
                   ),
-                )
+                ),
+                ListTile(
+                  dense: true, // 여백을 줄이는 설정
+                  leading: Icon(Icons.logout,
+                      color: const Color.fromARGB(
+                          255, 255, 90, 78)), // 로그아웃 아이콘 색상 변경
+                  title: Text(
+                    '로그아웃',
+                    style: TextStyle(
+                        color: const Color.fromARGB(
+                            255, 255, 90, 78)), // 로그아웃 텍스트 색상 변경
+                  ),
+                  onTap: () async {
+                    userAuthenticateService.logout();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/select', (route) => false);
+                  },
+                ),
               ],
             ),
           );

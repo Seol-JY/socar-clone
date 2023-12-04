@@ -182,7 +182,19 @@ class ReservationCar extends StatelessWidget {
                                     child: Directionality(
                                       textDirection: TextDirection.rtl,
                                       child: ElevatedButton.icon(
-                                        onPressed: () {Navigator.pushNamed(context, "/reservationConfirm", arguments: {"data": ""});},
+                                        onPressed: () {
+                                          Map<String, dynamic> arguments = {
+                                            'license_number':
+                                                reservationDatas[index]
+                                                    .carNumber,
+                                            'docRef':
+                                                reservationDatas[index].docRef,
+                                          };
+
+                                          Navigator.pushNamed(
+                                              context, "/reservationConfirm",
+                                              arguments: arguments);
+                                        },
                                         style: ElevatedButton.styleFrom(
                                           shape: const StadiumBorder(),
                                           elevation: 0,
@@ -255,6 +267,7 @@ class ReservationCar extends StatelessWidget {
           reservationEndTime:
               data['end_time'].toDate(), // Timestamp를 DateTime으로 변환
           parkingLocation: socarZoneSnapshot['name'],
+          docRef: document.reference,
         );
       }).toList();
 
