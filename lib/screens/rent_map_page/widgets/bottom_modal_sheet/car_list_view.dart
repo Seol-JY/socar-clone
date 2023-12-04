@@ -9,21 +9,27 @@ import 'package:socar/screens/rent_map_page/widgets/padding_box.dart';
 import 'package:socar/screens/rent_map_page/widgets/time_select_modal_utils.dart';
 
 class CarListView extends StatelessWidget {
+  final String socarZoneId;
   final List<CarData> carList;
   final List<String> reservationList;
   final DateTimeRange timeRange;
   final bool isChanged;
   final void Function(DateTimeRange newTimeRange) updateTimeRange;
+  final void Function(String markerId) setMarkerId;
 
   const CarListView(
-      {required this.carList,
+      {required this.socarZoneId,
+      required this.carList,
       required this.reservationList,
       required this.timeRange,
       required this.isChanged,
-      required this.updateTimeRange});
+      required this.updateTimeRange,
+      required this.setMarkerId});
 
   @override
   Widget build(BuildContext context) {
+    print(carList);
+    print(reservationList);
     return Expanded(
       child: ListView.separated(
         shrinkWrap: true,
@@ -100,7 +106,12 @@ class CarListView extends StatelessWidget {
                   child: GestureDetector(
                       onTap: () {
                         TimeSelectModalUtils.showCustomModal(
-                            context, timeRange, isChanged, updateTimeRange);
+                            context,
+                            timeRange,
+                            isChanged,
+                            updateTimeRange,
+                            setMarkerId,
+                            socarZoneId);
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),

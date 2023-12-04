@@ -30,7 +30,7 @@ class _TimeSelectBtnState extends State<TimeSelectBtn> {
         child: ElevatedButton(
           onPressed: () {
             TimeSelectModalUtils.showCustomModal(context, widget.timeRange,
-                widget.isChanged, widget.updateTimeRange);
+                widget.isChanged, widget.updateTimeRange, null, null);
           },
           style: ElevatedButton.styleFrom(
             foregroundColor: const Color.fromARGB(255, 234, 234, 234),
