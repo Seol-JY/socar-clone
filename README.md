@@ -4,6 +4,20 @@
 
 <img width="1737" alt="스크린샷 2023-12-11 오전 7 09 07" src="https://github.com/opensource-2023-team9/flutter-app/assets/70826982/bc83481e-317d-41d6-acdb-e3ad3975d953">
 
+<br/>
+
+## ❓ How to run?
+> 안드로이드 애뮬레이터 환경에서만 정상적으로 실행됩니다.
+> 
+#### 실행  
+```bash
+$ git clone https://github.com/opensource-2023-team9/flutter-app.git
+$ cd flutter-app
+$ flutter pub get
+$ flutter run
+```
+
+<br/>
 
 ## 👬 팀 소개
 
