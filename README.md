@@ -8,7 +8,7 @@
 
 ## ❓ How to run?
 > 안드로이드 애뮬레이터 환경에서만 정상적으로 실행됩니다.
-> 
+> Dart 및 Flutter 개발 환경 설정이 필요합니다.
 #### 실행  
 ```bash
 $ git clone https://github.com/opensource-2023-team9/flutter-app.git
